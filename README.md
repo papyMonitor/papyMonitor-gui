@@ -4,15 +4,12 @@
 
 ## Description
 
-papyMonitor is a multiplatform (Windows, Linux, Mac, ...) tool to interactively receive/edit/monitor data and send commands to an embedded device with the serial port. The embedded device can be Arduino, pic, AVR, ARM,...).
+papyMonitor is a multiplatform (Windows, Linux, Mac, ...) tool to interactively receive/edit/monitor data and send commands to an embedded system with the serial port. The embedded system can be Arduino (all flavors supported), PIC, AVR, ARM,... or a computer.
 
-It is fast, real time (the embedded system is the master) and proudly made with Godot Engine. The language used is C#, the user configuration file rely on Lua but is very easy to understand and to modify. This tool is already used in production but has for sure some bugs to discover. The MAC version has not been tested since we don't have a MAC, so developers are welcome.
+It is fast, real time (the embedded system is the master) and proudly made with Godot Engine. The language used is C#, the user configuration file rely on Lua language but is very easy to manipulate. This tool is already used in production but -for sure- still has some bugs to discover. The MAC version has not been tested since we don't have a MAC, so developers are welcome.
 
-## Table of Contents
-
-The **Scripts** folder contains the C# files
-
-The **icons** folder contains the project icons
+## Installation
+Go to Releases and select the binary for your platform
 
 ## Installation (developers)
 
@@ -20,9 +17,9 @@ Clone this repo and adapt the .vscode to your need if you use VSCode
 
 ## Usage/Documentation
 
-The application configure itself (GUI, behavior,...) based on informations given in  **one** .ini file. This .ini file is writen by the user.
+The application configure itself (GUI, behavior,...) based on informations given in  **one** configuration file (a *.lua file). This *.lua file is writen by the user.
 
-For hardware configuration, see the related sections
+For the embedded system configuration, see the related sections
 
 ## Contributing
 
