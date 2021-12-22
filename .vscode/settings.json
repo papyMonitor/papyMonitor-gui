@@ -1,0 +1,10 @@
+{
+    "godot_tools.editor_path": "/home/olivier/Bureau/Godot/Godot_v3.4-stable_mono_x11.64",
+    "omnisharp.useGlobalMono": "never",
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "editor.suggestOnTriggerCharacters": true,
+}

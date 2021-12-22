@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/widgetSliderH.cs" type="Script" id=1]
+
+[node name="widgetSliderH" type="HBoxContainer"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+rect_min_size = Vector2( 180, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CanEdit" type="CheckBox" parent="."]
+margin_right = 24.0
+margin_bottom = 24.0
+
+[node name="HSlider" type="HSlider" parent="."]
+margin_left = 28.0
+margin_right = 1817.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+max_value = 255.0
+rounded = true
+tick_count = 10
+ticks_on_borders = true
+
+[node name="UseJoyPad" type="CheckBox" parent="."]
+margin_left = 1821.0
+margin_right = 1920.0
+margin_bottom = 24.0
+text = "Use joypad"

@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/signal.cs" type="Script" id=1]
+
+[node name="signal" type="VBoxContainer"]
+anchor_right = 1.0
+size_flags_horizontal = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 1920.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+
+[node name="Trig" type="CheckBox" parent="HBoxContainer"]
+margin_right = 51.0
+margin_bottom = 24.0
+text = "Trig"
+
+[node name="signalName" type="Button" parent="HBoxContainer"]
+margin_left = 55.0
+margin_right = 1896.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = true
+
+[node name="Panel" type="Panel" parent="HBoxContainer"]
+margin_left = 1900.0
+margin_right = 1920.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 0 )
+size_flags_vertical = 3
+
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/Panel"]
+margin_left = 0.0637207
+margin_top = 0.498871
+margin_right = 20.0637
+margin_bottom = 24.4989
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0.572549, 0.254902, 0.254902, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PopupPanel" type="PopupPanel" parent="."]
+margin_right = 8.0
+margin_bottom = 8.0
+
+[node name="ColorPicker" type="ColorPicker" parent="PopupPanel"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 314.0
+margin_bottom = 466.0
+presets_enabled = false

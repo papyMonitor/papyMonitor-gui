@@ -1,0 +1,27 @@
+[gd_scene format=2]
+
+[node name="VBox" type="VBoxContainer"]
+anchor_right = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button_Cmd" type="Button" parent="."]
+margin_right = 1920.0
+margin_bottom = 20.0
+text = "Text here"
+
+[node name="Data_Cmd" type="LineEdit" parent="."]
+margin_top = 24.0
+margin_right = 1920.0
+margin_bottom = 48.0
+text = "value here"
+align = 1
+
+[node name="HSeparator" type="HSeparator" parent="."]
+margin_top = 52.0
+margin_right = 1920.0
+margin_bottom = 56.0
+rect_min_size = Vector2( 0, 2 )
+
+[connection signal="pressed" from="Button_Cmd" to="." method="_on_Button_Cmd_pressed"]

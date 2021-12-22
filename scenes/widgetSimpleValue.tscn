@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/widgetSimpleValue.cs" type="Script" id=1]
+
+[node name="widgetSimpleValue" type="HBoxContainer"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_bottom = 24.0
+
+[node name="Label_Index" type="Label" parent="."]
+margin_left = 4.0
+margin_top = 5.0
+margin_right = 4.0
+margin_bottom = 19.0
+hint_tooltip = "No tips"
+mouse_filter = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LineEdit_Value" type="LineEdit" parent="."]
+margin_left = 8.0
+margin_right = 1916.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+align = 2
+
+[node name="Unit" type="Label" parent="."]
+margin_left = 1920.0
+margin_top = 5.0
+margin_right = 1920.0
+margin_bottom = 19.0

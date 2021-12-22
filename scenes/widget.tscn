@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/widget.cs" type="Script" id=1]
+
+[node name="widget" type="HBoxContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -39.0
+margin_top = -10.0
+margin_right = 39.0
+margin_bottom = 10.0
+grow_horizontal = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 2.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 2, 0 )
+
+[node name="VarText" type="Label" parent="."]
+margin_left = 6.0
+margin_right = 33.0
+margin_bottom = 20.0
+grow_horizontal = 0
+rect_min_size = Vector2( 20, 0 )
+size_flags_vertical = 1
+text = "Text"
+valign = 1
+
+[node name="MonitOnOff" type="Button" parent="."]
+margin_left = 37.0
+margin_right = 61.0
+margin_bottom = 20.0
+grow_horizontal = 0
+action_mode = 0
+text = "M"
+flat = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[connection signal="pressed" from="MonitOnOff" to="." method="_on_MonitOnOff_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

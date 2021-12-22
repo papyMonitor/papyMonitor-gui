@@ -1,0 +1,136 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/ChartCommandArea.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/Chart.cs" type="Script" id=2]
+[ext_resource path="res://scripts/signalShow.cs" type="Script" id=3]
+
+[node name="drawEngine" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBox" type="HBoxContainer" parent="."]
+margin_right = 1920.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox2" type="VBoxContainer" parent="HBox"]
+margin_right = 1916.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ColorRect" type="ColorRect" parent="HBox/VBox2"]
+margin_right = 1916.0
+margin_bottom = 990.0
+rect_min_size = Vector2( 300, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 1, 1, 1, 0.25098 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBox/VBox2/ColorRect"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="signalShow" type="Button" parent="HBox/VBox2/ColorRect/VBoxContainer"]
+margin_right = 139.0
+margin_bottom = 20.0
+toggle_mode = true
+text = "Show signals to plot"
+script = ExtResource( 3 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBox/VBox2/ColorRect/VBoxContainer"]
+margin_top = 24.0
+margin_right = 139.0
+margin_bottom = 24.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="signalsPanel" type="VBoxContainer" parent="HBox/VBox2/ColorRect/VBoxContainer/HBoxContainer"]
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="signalsPanel2" type="VBoxContainer" parent="HBox/VBox2/ColorRect/VBoxContainer/HBoxContainer"]
+margin_left = 4.0
+margin_right = 4.0
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Chart" type="Node2D" parent="HBox/VBox2/ColorRect"]
+script = ExtResource( 2 )
+
+[node name="TimerTrigDisplay" type="Timer" parent="HBox/VBox2/ColorRect/Chart"]
+
+[node name="YDiv" type="Label" parent="HBox/VBox2/ColorRect"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -123.911
+margin_top = -61.1143
+margin_right = -92.9111
+margin_bottom = -47.1143
+rect_pivot_offset = Vector2( 15.5, 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="XDiv" type="Label" parent="HBox/VBox2/ColorRect"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -122.815
+margin_top = -37.7888
+margin_right = -53.8149
+margin_bottom = -20.7888
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TrigName" type="Label" parent="HBox/VBox2/ColorRect"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 50.0
+margin_bottom = 25.8921
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TrigEvent" type="Label" parent="HBox/VBox2/ColorRect"]
+margin_left = 10.0
+margin_top = 30.0
+margin_right = 54.8665
+margin_bottom = 46.7487
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="HBox/VBox2"]
+margin_top = 994.0
+margin_right = 1916.0
+margin_bottom = 994.0
+
+[node name="controlArea" parent="HBox/VBox2" instance=ExtResource( 1 )]
+margin_top = 998.0
+margin_right = 1916.0
+margin_bottom = 1080.0
+
+[node name="VBox3" type="VBoxContainer" parent="HBox"]
+margin_left = 1920.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+size_flags_vertical = 3

@@ -1,0 +1,130 @@
+[gd_scene format=2]
+
+[node name="controlArea" type="VBoxContainer"]
+margin_top = 4.0
+margin_right = 1359.0
+margin_bottom = 24.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 1359.0
+margin_bottom = 20.0
+
+[node name="Label4" type="Label" parent="HBoxContainer"]
+margin_top = 3.0
+margin_right = 78.0
+margin_bottom = 17.0
+text = "HW sample:"
+
+[node name="hwSampleTime" type="Label" parent="HBoxContainer"]
+margin_left = 82.0
+margin_top = 3.0
+margin_right = 82.0
+margin_bottom = 17.0
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+margin_left = 86.0
+margin_top = 3.0
+margin_right = 209.0
+margin_bottom = 17.0
+text = "Elements sampled:"
+
+[node name="nbElementsSampled" type="Label" parent="HBoxContainer"]
+margin_left = 213.0
+margin_top = 3.0
+margin_right = 213.0
+margin_bottom = 17.0
+
+[node name="Label5" type="Label" parent="HBoxContainer"]
+margin_left = 217.0
+margin_top = 3.0
+margin_right = 351.0
+margin_bottom = 17.0
+text = "Sample per element:"
+
+[node name="samplePerElement" type="Label" parent="HBoxContainer"]
+margin_left = 355.0
+margin_top = 3.0
+margin_right = 355.0
+margin_bottom = 17.0
+
+[node name="Label6" type="Label" parent="HBoxContainer"]
+margin_left = 359.0
+margin_top = 3.0
+margin_right = 471.0
+margin_bottom = 17.0
+text = "Points per curve: "
+
+[node name="nbPointsPerCurve" type="OptionButton" parent="HBoxContainer"]
+margin_left = 475.0
+margin_right = 536.0
+margin_bottom = 20.0
+text = "1000"
+items = [ "1000", null, false, 0, null, "2000", null, false, 1, null, "5000", null, false, 2, null, "10000", null, false, 3, null, "50000", null, false, 4, null, "100000", null, false, 5, null ]
+selected = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+margin_top = 24.0
+margin_right = 1359.0
+margin_bottom = 64.0
+
+[node name="Label2" type="Label" parent="HBoxContainer2"]
+margin_top = 13.0
+margin_right = 109.0
+margin_bottom = 27.0
+text = "Points displayed:"
+
+[node name="pointsDisplayed" type="Label" parent="HBoxContainer2"]
+margin_left = 113.0
+margin_top = 13.0
+margin_right = 113.0
+margin_bottom = 27.0
+
+[node name="Label3" type="Label" parent="HBoxContainer2"]
+margin_left = 117.0
+margin_top = 13.0
+margin_right = 255.0
+margin_bottom = 27.0
+text = "Total time displayed: "
+
+[node name="totalTimeDisplayed" type="Label" parent="HBoxContainer2"]
+margin_left = 259.0
+margin_top = 13.0
+margin_right = 259.0
+margin_bottom = 27.0
+
+[node name="freeze" type="Button" parent="HBoxContainer2"]
+margin_left = 263.0
+margin_right = 360.0
+margin_bottom = 40.0
+text = "Toggle freeze"
+
+[node name="ScopeMode" type="CheckButton" parent="HBoxContainer2"]
+margin_left = 364.0
+margin_right = 523.0
+margin_bottom = 40.0
+text = "Scope mode"
+
+[node name="TriggerMode" type="CheckButton" parent="HBoxContainer2"]
+margin_left = 527.0
+margin_right = 669.0
+margin_bottom = 40.0
+disabled = true
+text = "Triggering"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+margin_top = 68.0
+margin_right = 1359.0
+margin_bottom = 82.0
+
+[node name="Label" type="Label" parent="HBoxContainer3"]
+margin_right = 45.0
+margin_bottom = 14.0
+text = "JoyPad:"
+
+[node name="JoyPadName" type="Label" parent="HBoxContainer3"]
+margin_left = 49.0
+margin_right = 49.0
+margin_bottom = 14.0

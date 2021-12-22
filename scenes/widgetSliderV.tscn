@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/widgetSliderV.cs" type="Script" id=1]
+
+[node name="widgetSliderV" type="VBoxContainer"]
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -49.5
+margin_right = 49.5
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CanEdit" type="CheckBox" parent="."]
+margin_right = 99.0
+margin_bottom = 24.0
+
+[node name="VSlider" type="VSlider" parent="."]
+margin_top = 28.0
+margin_right = 99.0
+margin_bottom = 1052.0
+rect_min_size = Vector2( 0, 150 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+max_value = 255.0
+rounded = true
+tick_count = 10
+ticks_on_borders = true
+
+[node name="UseJoyPad" type="CheckBox" parent="."]
+margin_top = 1056.0
+margin_right = 99.0
+margin_bottom = 1080.0
+text = "Use joypad"
