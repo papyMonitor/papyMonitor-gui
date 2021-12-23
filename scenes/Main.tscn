@@ -254,8 +254,8 @@ mode_overrides_title = false
 mode = 0
 access = 2
 filters = PoolStringArray( "*.lua" )
-current_dir = "/media/olivier/DATADISK/GAW-R/04-Projets/11-PapyMonitor/papymonitor-gui"
-current_path = "/media/olivier/DATADISK/GAW-R/04-Projets/11-PapyMonitor/papymonitor-gui/"
+current_dir = "/media/olivier/DATADISK/GAW-R/04-Projets/11-PapyMonitor/papyMonitor-gui"
+current_path = "/media/olivier/DATADISK/GAW-R/04-Projets/11-PapyMonitor/papyMonitor-gui/"
 
 [node name="SaveFile" type="FileDialog" parent="."]
 margin_right = 360.0
@@ -267,8 +267,8 @@ resizable = true
 mode_overrides_title = false
 access = 2
 filters = PoolStringArray( "*.lua" )
-current_dir = "/media/olivier/DATADISK/GAW-R/04-Projets/11-PapyMonitor/papymonitor-gui"
-current_path = "/media/olivier/DATADISK/GAW-R/04-Projets/11-PapyMonitor/papymonitor-gui/"
+current_dir = "/media/olivier/DATADISK/GAW-R/04-Projets/11-PapyMonitor/papyMonitor-gui"
+current_path = "/media/olivier/DATADISK/GAW-R/04-Projets/11-PapyMonitor/papyMonitor-gui/"
 
 [node name="ComPort" type="Timer" parent="."]
 script = ExtResource( 7 )

@@ -1154,6 +1154,9 @@ public class ConfigData_t
 			try { IReportTextConsole = ((string)pars["IReportTextConsole"])[0]; } 
 			catch { errortype("IReportTextConsole"); ConfigOk = false; }
 
+			try { SampleTimeHW = Convert.ToSingle(pars["SampleTimeHW"]); } 
+			catch { errortype("SampleTimeHW"); ConfigOk = false; }
+
 			if (pars["Vue3D"] != null)
 			{
 				try { Vue3D = Convert.ToBoolean(pars["Vue3D"]); } 

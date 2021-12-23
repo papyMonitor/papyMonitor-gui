@@ -102,19 +102,21 @@ __meta__ = {
 }
 
 [node name="TrigName" type="Label" parent="HBox/VBox2/ColorRect"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 50.0
-margin_bottom = 25.8921
+margin_left = 376.0
+margin_top = 6.0
+margin_right = 416.0
+margin_bottom = 21.8921
+rect_min_size = Vector2( 200, 0 )
+align = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="TrigEvent" type="Label" parent="HBox/VBox2/ColorRect"]
-margin_left = 10.0
-margin_top = 30.0
-margin_right = 54.8665
-margin_bottom = 46.7487
+margin_left = 588.0
+margin_top = 6.0
+margin_right = 632.867
+margin_bottom = 22.7487
 __meta__ = {
 "_edit_use_anchors_": false
 }

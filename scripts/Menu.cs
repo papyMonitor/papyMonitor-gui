@@ -494,6 +494,10 @@ public class Menu : HBoxContainer
 
     private void processReportValue(string line)
     {
+        object objValue = null;
+        bool goUpdate = false;
+        Int32 varIdx = -1;
+
         // Check if it's a console line
         if (line.Length > 1)
         {
@@ -508,7 +512,7 @@ public class Menu : HBoxContainer
                     try
                     {
                         // It's a report value, retrieve the variable index
-                        Int32 varIdx = int.Parse(line.Substring(1, 2), System.Globalization.NumberStyles.HexNumber);
+                        varIdx = int.Parse(line.Substring(1, 2), System.Globalization.NumberStyles.HexNumber);
 
                         // Update the receiving timing per index
                         chartUpdateTiming(varIdx);
@@ -517,14 +521,9 @@ public class Menu : HBoxContainer
                         {
                             VarType_e varType = (VarType_e)line.Substring(3, 1)[0];
 
-                            // Enum.TryParse(line.Substring(3, 1), out varType);
+                            objValue = helper.GetCOMValue(line, varType);
 
-                            // Check field type from ConfigData.Vars array
-                            // VarType_e varType;
-				            // RInst.valuesType.TryGetValue(line.Substring(3, 1), out varType);
-                            
-
-                            updateValue(varIdx, helper.GetCOMValue(line, varType));
+                            goUpdate = true;
                         }
                     }
                     catch (Exception ex)
@@ -536,8 +535,10 @@ public class Menu : HBoxContainer
                         // En attendant de debugger
                         chartUpdateTiming(0);
                     }
+                    
+                    if (goUpdate)
+                        updateValue(varIdx, objValue);
                 }  
-
             }
         }
     }
