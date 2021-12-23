@@ -372,10 +372,6 @@ public class Curve_t
                         else
                             EndTriggerWindowIdx = Parent.TriggerIdx + NbDisplayPts_X/2 - Params.NbDataPts_X;
 
-                        Parent.Debug0Inst.Text = "WStart:  " + StartTriggerWindowIdx.ToString();
-                        Parent.Debug1Inst.Text = "WEnd:    " + EndTriggerWindowIdx.ToString();
-
-
                         if (EndTriggerWindowIdx > StartTriggerWindowIdx)
                         {
                             if (IdxDataScope > EndTriggerWindowIdx)
@@ -394,8 +390,6 @@ public class Curve_t
                             }
                         }
                     }
-                    Parent.Debug2Inst.Text = "TrigIdx: " + Parent.TriggerIdx.ToString();
-                    Parent.Debug3Inst.Text = "OnTrig: " + OnTriggering.ToString();
                 }
                 else
                 {
@@ -408,10 +402,6 @@ public class Curve_t
                         EndTriggerWindowIdx = Parent.TriggerIdx + NbDisplayPts_X/2;
                     else
                         EndTriggerWindowIdx = Parent.TriggerIdx + NbDisplayPts_X/2 - Params.NbDataPts_X;
-
-                    Parent.Debug0Inst.Text = "WStart:  " + StartTriggerWindowIdx.ToString();
-                    Parent.Debug1Inst.Text = "WEnd:    " + EndTriggerWindowIdx.ToString();
-
 
                     if (EndTriggerWindowIdx > StartTriggerWindowIdx)
                     {
@@ -480,10 +470,7 @@ public class Chart : Node2D
     private OptionButton nbPointsPerCurveInst;
     private CheckButton ScopeModeInst;
     private CheckButton ScopeModeTriggerInst;
-    public Label Debug0Inst;
-    public Label Debug1Inst;
-    public Label Debug2Inst;
-    public Label Debug3Inst;
+
     //
     public bool ScopeMode;
     public bool ScopeTriggerMode;
@@ -534,10 +521,7 @@ public class Chart : Node2D
         ScopeModeInst.Connect("toggled", this, nameof(ScopeMode_Toggled));
         ScopeModeTriggerInst = controlAreaInst.FindNode("TriggerMode") as CheckButton;
         ScopeModeTriggerInst.Connect("toggled", this, nameof(TriggerMode_Toggled));
-        Debug0Inst = RInst.FindNode("Debug0") as Label;
-        Debug1Inst = RInst.FindNode("Debug1") as Label;
-        Debug2Inst = RInst.FindNode("Debug2") as Label;
-        Debug3Inst = RInst.FindNode("Debug3") as Label;
+
         sigPan1Inst = (RInst.FindNode("drawEngine") as VBoxContainer).FindNode("signalsPanel") as VBoxContainer;
         sigPan2Inst = (RInst.FindNode("drawEngine") as VBoxContainer).FindNode("signalsPanel2") as VBoxContainer;
         TimerTrigDisplayInst = FindNode("TimerTrigDisplay") as Timer;
@@ -658,17 +642,17 @@ public class Chart : Node2D
     }
     public void SeekTriggerName()
     {
-        TrigNameInst.Text = "NO TRIG SOURCE";
+        TrigNameInst.Text = "No trig source";
 
         var children = sigPan1Inst.GetChildren();
         foreach (signal c in children)
             if ((c.FindNode("Trig") as CheckBox).Pressed )
-                    TrigNameInst.Text = (c.FindNode("signalName") as Button).Text;
+                    TrigNameInst.Text = "Trig source: " + (c.FindNode("signalName") as Button).Text;
 
         children = sigPan2Inst.GetChildren();
         foreach (signal c in children)
             if ((c.FindNode("Trig") as CheckBox).Pressed )
-                    TrigNameInst.Text = (c.FindNode("signalName") as Button).Text;
+                    TrigNameInst.Text = "Trig source: " + (c.FindNode("signalName") as Button).Text;
     }
     public void UpdateDisplayParameters()
     {
