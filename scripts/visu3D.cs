@@ -9,12 +9,20 @@ public class visu3D : Spatial
     public Camera CameraInst;
     public Spatial PivotInst;
 
+    bool onArea;
+    bool dragRot, dragPos;
+    Vector2 startDragPosition;
+
     public override void _Ready()
     {
         RInst = GetNode<MainTop>("/root/Main");
         VP3DContainerInst = RInst.FindNode("VP3DContainer") as ViewportContainer;
         CameraInst = FindNode("Camera") as Camera;
         PivotInst = FindNode("Pivot") as Spatial;
+
+        onArea = false;
+        dragRot = false;
+        dragPos = false;
     }
 
     public override void _Process(float delta)
@@ -36,9 +44,6 @@ public class visu3D : Spatial
         }
     }
 
-    bool onArea = false;
-    bool dragging = false;
-    Vector2 startDragPosition;
     public override void _Input(InputEvent inputEvent)
     {
         if (!(RInst.FindNode("LoadFile") as FileDialog).Visible &&
@@ -59,15 +64,23 @@ public class visu3D : Spatial
                         switch ((ButtonList)mouseEvent.ButtonIndex)
                         {
                             case ButtonList.Left:
-                                dragging = true;
-                                startDragPosition = pos;
+                                dragRot = true;
                                 break;
+
+                            case ButtonList.Right:
+                                dragPos = true;
+                                startDragPosition = pos;
+                                break;                                
                         }
                     else
                         switch ((ButtonList)mouseEvent.ButtonIndex)
                         {
                             case ButtonList.Left:
-                                dragging = false;
+                                dragRot = false;
+                                break;
+
+                            case ButtonList.Right:
+                                dragPos = false;
                                 break;
 
                             case ButtonList.WheelUp:
@@ -81,7 +94,8 @@ public class visu3D : Spatial
                 }
                 else
                 {
-                    dragging = false;
+                    dragRot = false;
+                    dragPos = false;
                 }
             }
 
@@ -92,12 +106,26 @@ public class visu3D : Spatial
                 Vector2 pos = motionEvent.Position;
                 onArea = (pos.x > 0 && pos.y > 0 && pos.x < areaSize.x && pos.y < areaSize.y);
 
-                if (dragging)
+                if (dragRot)
                 {
                     if (onArea)
                     {
                         PivotInst.Rotate(CameraInst.GlobalTransform.basis.x, Mathf.Deg2Rad(-motionEvent.Relative.y));
                         PivotInst.Rotate(Vector3.Up, Mathf.Deg2Rad(-motionEvent.Relative.x));
+                    }
+                }
+
+                if (dragPos)
+                {
+                    if (onArea)
+                    {
+                        Transform t = Transform.Identity;
+                        t.basis = Basis.Identity;
+
+                       // t.Translated(new Vector3(0,0,motionEvent.Relative.y));
+
+                        CameraInst.Translate(new Vector3(-motionEvent.Relative.x * 0.05f, motionEvent.Relative.y * 0.05f, 0));
+                        //CameraInst.Transform = t;
                     }
                 }
             }
