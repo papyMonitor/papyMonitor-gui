@@ -579,9 +579,10 @@ public class Solid_t : Spatial
 				{
 					// Custom loaded mesh
 					PackedSceneGLTF model = new PackedSceneGLTF();
-					if (System.IO.File.Exists(value))
+					string fullPath = configData.currentPath + "/" + value;
+					if (System.IO.File.Exists(fullPath))
 					{
-						Node node = model.ImportGltfScene(value);
+						Node node = model.ImportGltfScene(fullPath);
 						sp.AlbedoColor = new Color(Color.r, Color.g, Color.b);
 
 						var children = node.GetChildren();
@@ -606,9 +607,9 @@ public class Solid_t : Spatial
 
 			Transform = t;
 
-			RotateObjectLocal(Vector3.Right, 	StartRotation.x + R.x/180.0f*(float)Math.PI);	
-			RotateObjectLocal(Vector3.Up, 		StartRotation.y + R.y/180.0f*(float)Math.PI);
-			RotateObjectLocal(Vector3.Forward, 	StartRotation.z + R.z/180.0f*(float)Math.PI);									
+			RotateObjectLocal(Vector3.Right, 	StartRotation.x/180.0f*(float)Math.PI + R.x/180.0f*(float)Math.PI);	
+			RotateObjectLocal(Vector3.Up, 		StartRotation.y/180.0f*(float)Math.PI + R.y/180.0f*(float)Math.PI);
+			RotateObjectLocal(Vector3.Forward, 	StartRotation.z/180.0f*(float)Math.PI + R.z/180.0f*(float)Math.PI);									
 		}
 	}
 	// End of mandatory Data from Lua file
@@ -817,8 +818,6 @@ public class Solid_t : Spatial
 				}
 			}	
 
-
-
 			if (solidObject.ContainsKey("Formula"))
 			{
 				if (solidObject["Formula"].GetType() != typeof(LuaFunction))
@@ -887,9 +886,9 @@ public class Solid_t : Spatial
 
 			Transform = t;
 
-			RotateObjectLocal(Vector3.Right, 	StartRotation.x + R.x/180.0f*(float)Math.PI);	
-			RotateObjectLocal(Vector3.Up, 		StartRotation.y + R.y/180.0f*(float)Math.PI);
-			RotateObjectLocal(Vector3.Forward, 	StartRotation.z + R.z/180.0f*(float)Math.PI);
+			RotateObjectLocal(Vector3.Right, 	StartRotation.x/180.0f*(float)Math.PI + R.x/180.0f*(float)Math.PI);	
+			RotateObjectLocal(Vector3.Up, 		StartRotation.y/180.0f*(float)Math.PI + R.y/180.0f*(float)Math.PI);
+			RotateObjectLocal(Vector3.Forward, 	StartRotation.z/180.0f*(float)Math.PI + R.z/180.0f*(float)Math.PI);
 
 			// Update colors, and other optional values
 			sp.AlbedoColor = new Color(Color.r, Color.g, Color.b, Color.a);
@@ -1038,14 +1037,6 @@ public class TabGroup_t
 			catch { errortype("NoExpandY"); TabGroupOk = false; }
 		}
 
-		// var e = group.GetEnumerator();
-		// while(e.MoveNext())
-		// {
-		// 	Int32 keytabs = Convert.ToInt32(e.Key) - 1;
-		// 	Tabs.Add(keytabs, new Tab_t(c, (LuaTable)e.Value));
-		// 	TabGroupOk = TabGroupOk && Tabs[keytabs].TabOk;
-		// }
-
 		try { LuaTable test = (LuaTable)group["Tabs"]; } 
 		catch { errortype("Tabs"); TabGroupOk = false;}	
 
@@ -1074,6 +1065,7 @@ public class ConfigData_t
 	public char IReportValue, IReportTextConsole;
 	//In ms, every ms a report is sent
 	public float SampleTimeHW;
+	public string currentPath;
 
 	//Fields layouting
 	public Dictionary<Int32, TabGroup_t> TabGroups;
@@ -1084,9 +1076,10 @@ public class ConfigData_t
 
 	private ConsoleOut c;
 
-	public ConfigData_t(ConsoleOut _c)
+	public ConfigData_t(ConsoleOut _c, string _currentPath)
 	{
 		c = _c;
+		currentPath = _currentPath;
 		Vars = new Dictionary<Int32, Var_t>();
 		Solids = new Dictionary<string, Solid_t>();
 		TabGroups = new Dictionary<Int32, TabGroup_t>();
@@ -1227,8 +1220,6 @@ public class ConfigData_t
 }
 
 
-
-
 public class RowVBoxContainer : VBoxContainer
 {
 	public Int32 IdxVar = -1;
@@ -1257,6 +1248,7 @@ public class ParametersGroups_t
 	// Default and Variable for parsing ini string
 	//////////////////////////////////////////////	
 	public void Default(LuaTable pars){	}
+	public void Solid(LuaTable pars){	}
 	public void Variable(LuaTable var)
 	{
 		Var_t Var = new Var_t(c, var);
