@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.IO;
 using System.Globalization;
 using System.Collections.Generic;
 using NLua;
@@ -229,14 +230,12 @@ public class Menu : HBoxContainer
 
     private void onLoadFileSelected(string file)
     {
-        // Del getValHandler = getVal;
-
         // ini file
         if (!opensaveParamFile)
         {
-            var iniFile = new File();
+            var iniFile = new Godot.File();
 
-            if (iniFile.Open(file, File.ModeFlags.Read) != Error.Ok)
+            if (iniFile.Open(file, Godot.File.ModeFlags.Read) != Error.Ok)
             {
                 ConsoleInst.Print(LogLevel_e.eError, "File " + file + " not found, abording...\n");
             }
@@ -254,7 +253,7 @@ public class Menu : HBoxContainer
                 iniFile.Close();
 
                 Lua state = new Lua ();
-                RInst.ConfigData = new ConfigData_t(ConsoleInst);
+                RInst.ConfigData = new ConfigData_t(ConsoleInst, System.IO.Path.GetDirectoryName(file));
 
                 state["cfg"] = RInst.ConfigData;
            
@@ -290,9 +289,9 @@ public class Menu : HBoxContainer
         else
         {
             string param;
-            var paramFile = new File();
+            var paramFile = new Godot.File();
 
-            if (paramFile.Open(file, File.ModeFlags.Read) != Error.Ok)
+            if (paramFile.Open(file, Godot.File.ModeFlags.Read) != Error.Ok)
             {
                 ConsoleInst.Print(LogLevel_e.eError, "File " + file + " not found\n");
             }
@@ -543,6 +542,8 @@ public class Menu : HBoxContainer
         }
     }
 
+
+
     private bool keepThisIndex = true;
     private Int32 indexKeeped = -1;
     private UInt32 elementsCounter = 0;
@@ -571,7 +572,7 @@ public class Menu : HBoxContainer
                 elementsCounter = 0;
             }
             // reset in case of indexKeeped unselected
-            if (elementsCounter >= 120)
+            if (elementsCounter >= 256)
                 keepThisIndex = true;
         }
     }
@@ -594,14 +595,23 @@ public class Menu : HBoxContainer
             }
         }
 
-        // Set the value in ConfigData
-        RInst.ConfigData.Vars[keyVar].Data[keyData].Value = Value;
+        try
+        {
+            // Set the value in ConfigData
+            RInst.ConfigData.Vars[keyVar].Data[keyData].Value = Value;
 
-        updateDisplayValue(keyVar, keyData);
-        
-        // Add point to curve if required
-        if (RInst.ConfigData.Vars[keyVar].Data[keyData].CanPlot)
-            chartInst.AddElement(keyVar+keyData, Value);
+            updateDisplayValue(keyVar, keyData);
+            
+            // Add point to curve if required
+            if (RInst.ConfigData.Vars[keyVar].Data[keyData].CanPlot)
+                chartInst.AddElement(keyVar+keyData, Value);
+        }
+        catch (Exception ex)
+        {
+            String ff = ex.ToString();
+            transmissionErrors++;
+            labelFooterInfoInst.Text = transmissionErrors.ToString();
+        }
     }
 
     private void updateDisplayValue(Int32 keyVar, Int32 keyData)
@@ -669,7 +679,7 @@ public class Menu : HBoxContainer
 
                 string color = RInst.ConfigData.Vars[keyVar].Data[keyData].Bits[bit].Color;
 
-                bool bitValue = ((Byte)Value & (1 << bit)) != 0;
+                bool bitValue = (Convert.ToByte(Value) & (1 << bit)) != 0;
 
                 if (bitValue)
                 {
