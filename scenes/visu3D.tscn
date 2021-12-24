@@ -10,7 +10,7 @@ script = ExtResource( 1 )
 transform = Transform( 1, 0, 0, 0, 0.87764, 0.47932, 0, -0.47932, 0.87764, 0, 0, 0 )
 
 [node name="Camera" type="Camera" parent="Pivot"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.3612 )
+transform = Transform( 1, 0, 0, 0, 1, -2.98023e-08, 0, 2.98023e-08, 1, 1.14758, -0.252501, 9.08923 )
 fov = 47.8125
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

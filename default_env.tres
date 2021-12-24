@@ -2,13 +2,13 @@
 
 [sub_resource type="ProceduralSky" id=1]
 sky_top_color = Color( 0.466667, 0.701961, 0.831373, 1 )
-sun_color = Color( 1, 0.843137, 0, 1 )
-sun_curve = 0.22974
-sun_energy = 20.31
+sun_color = Color( 1, 0.960784, 0.745098, 1 )
+sun_curve = 0.292817
+sun_energy = 4.56
 
 [resource]
 background_mode = 2
 background_sky = SubResource( 1 )
 background_color = Color( 0.466667, 0.243137, 0.243137, 1 )
 ambient_light_color = Color( 1, 1, 1, 1 )
-ambient_light_energy = 2.2
+ambient_light_energy = 9.49
