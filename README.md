@@ -1,6 +1,6 @@
 # papyMonitor
 
-![papyMonitor](small.gif)
+![papyMonitor](main.gif)
 
 ## Description
 
