@@ -16,7 +16,7 @@
             "type": "godot-mono",
             "request": "launch",
             "mode": "executable",
-            "executable": "/home/olivier/Bureau/Godot/Godot_v3.3.3-stable_mono_x11.64",
+            "executable": "/home/olivier/Bureau/Godot/Godot_v3.4.2-stable_mono_x11.64",
             "executableArguments": [
                 "--path",
                 "${workspaceRoot}"
