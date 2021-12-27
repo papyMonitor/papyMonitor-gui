@@ -22,7 +22,7 @@ Clone this repo and adapt the .vscode to your need if you use VSCode
 
 ## Usage/Documentation
 
-The application configure itself (GUI, behavior,...) based on informations given in  **one** configuration file (a *.lua file). This *.lua file is writen by the user.
+The application configure itself (GUI, behavior,...) based on informations given in  **one** configuration file (a .lua file). This .lua file is writen by the user.
 
 For the embedded system configuration, see the related sections
 
