@@ -4,7 +4,7 @@
 
 ## Description
 
-papyMonitor-gui is a multiplatform (Windows, Linux, Mac, ...) tool to interactively receive/edit/monitor data and send commands to an embedded system with the serial port. The embedded system can be Arduino (all flavors supported), PIC, AVR, ARM,... or a computer.
+papyMonitor-gui is a multiplatform (Windows, Linux, Mac) tool to interactively receive/edit/monitor data and send commands to an embedded system with the serial port. The embedded system can be Arduino (all flavors supported), PIC, AVR, ARM,... or a computer.
 
 The tool provide a multifunction plotter as well a 3D display to simulate real mechanical systems.
 
