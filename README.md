@@ -12,23 +12,9 @@ It is fast, real time (the embedded system is the master) and proudly made with 
 
 This tool is already used in production but -for sure- still has some bugs to discover. The MAC version has not been tested since we don't have a MAC, so developers are welcome.
 
-## Installation
+## Documentation
 
-Go to Releases and download the binary for your platform
-
-## Installation (developers)
-
-Clone this repo and adapt the .vscode to your need if you use VSCode
-
-## Usage/Documentation
-
-The application configure itself (GUI, behavior,...) based on informations given in  **one** configuration file (a .lua file). This .lua file is writen by the user.
-
-For the embedded system configuration, see the related sections
-
-## Contributing
-
-This project can be enhanced in several ways, ideas and contributors welcomed
+[papyMonitor documentation](https://papymonitor.github.io/papyMonitor-doc)
 
 ## Credits
 
