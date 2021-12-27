@@ -253,7 +253,7 @@ public class Menu : HBoxContainer
                 iniFile.Close();
 
                 Lua state = new Lua ();
-                RInst.ConfigData = new ConfigData_t(ConsoleInst, System.IO.Path.GetDirectoryName(file));
+                RInst.ConfigData = new ConfigData_t(RInst, System.IO.Path.GetDirectoryName(file));
 
                 state["cfg"] = RInst.ConfigData;
            
@@ -305,7 +305,7 @@ public class Menu : HBoxContainer
 
                 Lua state = new Lua ();
                 ParametersGroups_t pars = 
-                    new ParametersGroups_t(ConsoleInst, ParametersNames[idParametersNamesSelected]);
+                    new ParametersGroups_t(RInst, ParametersNames[idParametersNamesSelected]);
 
                 state["par"] = pars;
             
@@ -373,7 +373,7 @@ public class Menu : HBoxContainer
         {
             Lua state = new Lua ();
             ParametersGroups_t pars = 
-                new ParametersGroups_t(ConsoleInst, ParametersNames[idParametersNamesSelected]);
+                new ParametersGroups_t(RInst, ParametersNames[idParametersNamesSelected]);
   
             state["cfg"] = pars;
 

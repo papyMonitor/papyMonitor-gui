@@ -104,8 +104,8 @@ public class Bit_t
 
 public class Data_t
 {
+	private MainTop RInst;
 	public bool DataOk;
-	private ConsoleOut c;
 	private Helper_t helper;
 
 	public string SingleText;
@@ -136,9 +136,9 @@ public class Data_t
 	// Field widget reference
 	public object Wigdet;
 
-	public Data_t(ConsoleOut _c, VarType_e _type, LuaTable data)
+	public Data_t(MainTop rInst, VarType_e _type, LuaTable data)
 	{
-		c = _c;
+		RInst = rInst;
 		DataOk = true;
 
 		OnEdit = false;
@@ -148,7 +148,7 @@ public class Data_t
 		Precision = 3;	
 		SingleText = "";
 
-		helper = new Helper_t(c);
+		helper = new Helper_t(RInst.ConsoleInst);
 
 		// Value cannot be null, hence an init regarding the type is necessary
 		switch (_type)
@@ -254,7 +254,7 @@ public class Data_t
 public class Var_t
 {
 	public bool VarOk;
-	private ConsoleOut c;
+	private MainTop RInst;
 	private Helper_t helper;
 
 	public string Text;
@@ -281,12 +281,12 @@ public class Var_t
 	public Single SliderMin, SliderMax;
 
 
-	public Var_t(ConsoleOut _c, LuaTable vars)
+	public Var_t(MainTop rInst, LuaTable vars)
 	{
-		c = _c;
+		RInst = rInst;
 		VarOk = true;
 
-		helper = new Helper_t(c);
+		helper = new Helper_t(RInst.ConsoleInst);
 		Data = new Dictionary<Int32, Data_t>();
 
 		SliderMin = 0.0f;
@@ -356,7 +356,7 @@ public class Var_t
 
 				if (DataTable == null)
 				{
-					Data.Add(0, new Data_t(c, _type, null));
+					Data.Add(0, new Data_t(RInst, _type, null));
 				}
 				else
 				{
@@ -364,7 +364,7 @@ public class Var_t
 					while(e.MoveNext())
 					{
 						Int32 keyDataTable = Convert.ToInt32(e.Key) - 1;
-						Data.Add(keyDataTable, new Data_t(c, _type, (LuaTable)e.Value));
+						Data.Add(keyDataTable, new Data_t(RInst, _type, (LuaTable)e.Value));
 						VarOk = VarOk && Data[keyDataTable].DataOk;
 					}
 				}
@@ -375,11 +375,11 @@ public class Var_t
 			try {
 				string Name;
 				Name = (string)vars["Name"];
-				c.Print(LogLevel_e.eError, "Error in Var " + Name + 
+				RInst.ConsoleInst.Print(LogLevel_e.eError, "Error in Var " + Name + 
 					": Mandatory fields not present\n");
 			} 
 			catch { 
-				c.Print(LogLevel_e.eError, "Error in Var NO NAME" + 
+				RInst.ConsoleInst.Print(LogLevel_e.eError, "Error in Var NO NAME" + 
 					": Mandatory fields not present\n");
 			}
 		}
@@ -521,8 +521,8 @@ public class ClassColor
 
 public class Solid_t : Spatial
 {
+	private MainTop RInst;
 	public bool SolidOk;
-	private ConsoleOut c;
 	private Helper_t helper;
 	private UtilityFunctions utilFunc;
 	private ConfigData_t configData;
@@ -530,13 +530,15 @@ public class Solid_t : Spatial
 	public ClassVector3 P, R, oldP, oldR, DP;
 
 	SpatialMaterial sp;
+	private static Texture textureBody;
+	
 	bool errorInFormula;
 
 	// Mandatory Data from Lua file
 
 	// 			Field 
 	// public string Name
-	// 			is defined in MeshInstance
+	// 			is defined in Spatial
 	public string Parent;
 
 	public string Body
@@ -555,9 +557,13 @@ public class Solid_t : Spatial
 				);
 
 				sp.AlbedoColor = new Color(Color.r, Color.g, Color.b);
+				sp.AlbedoTexture = textureBody;
 				mesh.MaterialOverride = sp;
 				
-				AddChild(mesh);
+				Spatial pivot = new Spatial();
+				pivot.AddChild(mesh);
+				pivot.Translate(new Vector3(0, CubeSize.y/2, 0));
+				AddChild(pivot);
 			}
 			else
 			{
@@ -571,45 +577,58 @@ public class Solid_t : Spatial
 					((CylinderMesh)mesh.Mesh).Height = CylinderHeight;
 
 					sp.AlbedoColor = new Color(Color.r, Color.g, Color.b);
+					sp.AlbedoTexture = textureBody;
 					mesh.MaterialOverride = sp;
 
-					AddChild(mesh);
+					Spatial pivot = new Spatial();
+					pivot.AddChild(mesh);
+					pivot.Translate(new Vector3(0, CylinderHeight/2, 0));
+					AddChild(pivot);
 				}
 				else
 				{
-					// Custom loaded mesh
-					PackedSceneGLTF model = new PackedSceneGLTF();
-					string fullPath = configData.currentPath + "/" + value;
-					if (System.IO.File.Exists(fullPath))
+					if (value == "Sphere")
 					{
-						Node node = model.ImportGltfScene(fullPath);
+						MeshInstance mesh = new MeshInstance();
+						mesh.Mesh = new SphereMesh();
+
+						((SphereMesh)mesh.Mesh).Radius = SphereRadius;
+						((SphereMesh)mesh.Mesh).Height = SphereHeight;
+
 						sp.AlbedoColor = new Color(Color.r, Color.g, Color.b);
+						sp.AlbedoTexture = textureBody;
 
-						var children = node.GetChildren();
-						foreach (Node n in children)
-						{
-							if (n is MeshInstance s)
-							{
-								s.MaterialOverride = sp;
-								// c.Print(LogLevel_e.eInfo, "Solid " + Name + " child count: " 
-								// 			+ this.GetChildCount() + "\n");
-							}
-						}
+						mesh.MaterialOverride = sp;
 
-						AddChild(node);
-					}					
+						Spatial pivot = new Spatial();
+						pivot.AddChild(mesh);
+						AddChild(pivot);
+					}
+					// Custom loaded mesh
+					// PackedSceneGLTF model = new PackedSceneGLTF();
+					// string fullPath = configData.currentPath + "/" + value;
+					// if (System.IO.File.Exists(fullPath))
+					// {
+					// 	Node node =  model.ImportGltfScene(fullPath);
+					// 	sp.AlbedoColor = new Color(Color.r, Color.g, Color.b);
+
+					// 	var children = node.GetChildren();
+					// 	foreach (Node n in children)
+					// 	{
+					// 		if (n is MeshInstance s)
+					// 		{
+					// 			s.MaterialOverride = sp;
+					// 		}
+					// 	}
+					// 	AddChild(node);
+					// }	
 				}
 			}	
-			Transform t = Transform.Identity;
-			t.basis = Basis.Identity;
 
-			t.Translated(StartPosition + P);
+			RotateObjectLocal(Vector3.Right,StartRotation.x/180.0f*(float)Math.PI);	
+			RotateObjectLocal(Vector3.Up,StartRotation.y/180.0f*(float)Math.PI);
+			RotateObjectLocal(Vector3.Forward,StartRotation.z/180.0f*(float)Math.PI);
 
-			Transform = t;
-
-			RotateObjectLocal(Vector3.Right, 	StartRotation.x/180.0f*(float)Math.PI + R.x/180.0f*(float)Math.PI);	
-			RotateObjectLocal(Vector3.Up, 		StartRotation.y/180.0f*(float)Math.PI + R.y/180.0f*(float)Math.PI);
-			RotateObjectLocal(Vector3.Forward, 	StartRotation.z/180.0f*(float)Math.PI + R.z/180.0f*(float)Math.PI);									
 		}
 	}
 	// End of mandatory Data from Lua file
@@ -619,6 +638,7 @@ public class Solid_t : Spatial
 	public ClassColor Color;
 	public ClassVector3 CubeSize, StartPosition, StartRotation;
 	public Single CylinderTopRadius, CylinderBottomRadius, CylinderHeight;
+	public Single SphereRadius, SphereHeight;
 	private LuaFunction Formula;
 
 	// User data here
@@ -633,12 +653,14 @@ public class Solid_t : Spatial
 			{ nameof(Body), typeof(string) },
 		};
 
-	public Solid_t(ConfigData_t _configData, ConsoleOut _c, Dictionary<string, object> solidObject)
+	public Solid_t(ConfigData_t _configData, MainTop rInst, Dictionary<string, object> solidObject)
 	{
-		c = _c;
+		RInst = rInst;
 		configData = _configData;
 
-		helper = new Helper_t(c);
+		textureBody = ResourceLoader.Load("res://images/sand_albedo.jpg") as Texture;
+
+		helper = new Helper_t(RInst.ConsoleInst);
 		utilFunc = new UtilityFunctions();
 		opt = new Dictionary<string, object>();
 		P = new ClassVector3();
@@ -733,6 +755,7 @@ public class Solid_t : Spatial
 			}	
 
 			CubeSize = new ClassVector3();
+			CubeSize.x = 1.0f; CubeSize.y = 1.0f; CubeSize.z = 1.0f;
 			if (solidObject.ContainsKey("CubeSize"))
 			{
 				if (solidObject["CubeSize"].GetType() == typeof(Dictionary<string, object>))
@@ -788,6 +811,30 @@ public class Solid_t : Spatial
 					helper.errortype("CylinderHeight");
 					SolidOk = false;
 				}
+			}
+
+			SphereRadius = 1.0f;
+			if (solidObject.ContainsKey("SphereRadius"))
+			{
+				if (solidObject["SphereRadius"].GetType() != typeof(Dictionary<string, object>))
+					SphereRadius = Convert.ToSingle(solidObject["SphereRadius"]);
+				else
+				{
+					helper.errortype("SphereRadius");
+					SolidOk = false;
+				}
+			}	
+
+			SphereHeight = 1.0f;
+			if (solidObject.ContainsKey("SphereHeight"))
+			{
+				if (solidObject["SphereHeight"].GetType() != typeof(Dictionary<string, object>))
+					SphereHeight = Convert.ToSingle(solidObject["SphereHeight"]);
+				else
+				{
+					helper.errortype("SphereHeight");
+					SolidOk = false;
+				}
 			}							
 			
 			if (solidObject.ContainsKey("MovePositionSmooth"))
@@ -834,10 +881,11 @@ public class Solid_t : Spatial
 			Parent = (string)solidObject[nameof(Parent)];
 			// This affectation must Add a child to the class
 			Body = (string)solidObject[nameof(Body)]; 
+			
 			if(GetChildCount() == 0)
 			{
-				c.Print(LogLevel_e.eError, "Solid " + Name + ": Bad Body " +(
-							string)solidObject[nameof(Body)] + " or body not found\n");
+				RInst.ConsoleInst.Print(LogLevel_e.eError, "Solid " + Name + ": Bad Body " +
+					(string)solidObject[nameof(Body)] + " or body not found\n");
 				SolidOk = false;
 			}
 		}
@@ -875,20 +923,30 @@ public class Solid_t : Spatial
 			}
 			catch
 			{
-				c.Print(LogLevel_e.eError, "Bad Formula for Solid " + Name + "\n");
+				RInst.ConsoleInst.Print(LogLevel_e.eError, "Bad Formula for Solid " + Name + "\n");
 				errorInFormula = true;
 			}
 
+			
+			// Rotate(Vector3.Right, 	StartRotation.x/180.0f*(float)Math.PI + R.x/180.0f*(float)Math.PI);	
+			// Rotate(Vector3.Up, 		StartRotation.y/180.0f*(float)Math.PI + R.y/180.0f*(float)Math.PI);
+			// Rotate(Vector3.Forward, 	StartRotation.z/180.0f*(float)Math.PI + R.z/180.0f*(float)Math.PI);
+
+
+			// RotateObjectLocal(GlobalTransform.basis.x, StartRotation.x/180.0f*(float)Math.PI + R.x/180.0f*(float)Math.PI);	
+			// RotateObjectLocal(GlobalTransform.basis.y, StartRotation.y/180.0f*(float)Math.PI + R.y/180.0f*(float)Math.PI);
+			// RotateObjectLocal(GlobalTransform.basis.z, StartRotation.z/180.0f*(float)Math.PI + R.z/180.0f*(float)Math.PI);
+
+
 			Transform t = Transform.Identity;
 			t.basis = Basis.Identity;
-
 			t.Translated(StartPosition + P);
 
 			Transform = t;
+			RotateObjectLocal(Vector3.Right,StartRotation.x/180.0f*(float)Math.PI + R.x/180.0f*(float)Math.PI);	
+			RotateObjectLocal(Vector3.Up,StartRotation.y/180.0f*(float)Math.PI + R.y/180.0f*(float)Math.PI);
+			RotateObjectLocal(Vector3.Forward,StartRotation.z/180.0f*(float)Math.PI + R.z/180.0f*(float)Math.PI);
 
-			RotateObjectLocal(Vector3.Right, 	StartRotation.x/180.0f*(float)Math.PI + R.x/180.0f*(float)Math.PI);	
-			RotateObjectLocal(Vector3.Up, 		StartRotation.y/180.0f*(float)Math.PI + R.y/180.0f*(float)Math.PI);
-			RotateObjectLocal(Vector3.Forward, 	StartRotation.z/180.0f*(float)Math.PI + R.z/180.0f*(float)Math.PI);
 
 			// Update colors, and other optional values
 			sp.AlbedoColor = new Color(Color.r, Color.g, Color.b, Color.a);
@@ -911,22 +969,27 @@ public class Solid_t : Spatial
 						((CylinderMesh)s.Mesh).TopRadius = CylinderTopRadius;
 						((CylinderMesh)s.Mesh).BottomRadius = CylinderBottomRadius;
 						((CylinderMesh)s.Mesh).Height = CylinderHeight;
-					}					
-				}
-				else
-				{
-					// This is a loaded node from file
-					// Update only the color
-					if (n is Node)
-					{
-						var children2 = n.GetChildren();
-						foreach (Node n2 in children2)
-						{
-							if (n2 is MeshInstance s2)
-								s2.MaterialOverride = sp;							
-						}
 					}
-				}			
+					if (s.Mesh.GetType() == typeof(SphereMesh))
+					{
+						((SphereMesh)s.Mesh).Radius = SphereRadius;
+						((SphereMesh)s.Mesh).Height = SphereHeight;
+					}										
+				}
+				// else
+				// {
+				// 	// This is a loaded node from file
+				// 	// Update only the color
+				// 	if (n is Node)
+				// 	{
+				// 		var children2 = n.GetChildren();
+				// 		foreach (Node n2 in children2)
+				// 		{
+				// 			if (n2 is MeshInstance s2)
+				// 				s2.MaterialOverride = sp;							
+				// 		}
+				// 	}
+				// }			
 			}
 		}
 	}
@@ -934,17 +997,18 @@ public class Solid_t : Spatial
 
 public class TabColumn_t
 {
+	MainTop RInst;
 	public bool ColumnOk;
 	public Dictionary<Int32, Int32> Rows;
-	ConsoleOut c;
+
 	private void errortype(string parameter)
 	{
-		c.Print(LogLevel_e.eError, "Bad type for field :" + parameter + "\n");
+		RInst.ConsoleInst.Print(LogLevel_e.eError, "Bad type for field :" + parameter + "\n");
 	}
 
-	public TabColumn_t(ConsoleOut _c, LuaTable column)
+	public TabColumn_t(MainTop rInst, LuaTable column)
 	{
-		c = _c;
+		RInst = rInst;
 		Rows = new Dictionary<Int32, Int32>();
 
 		ColumnOk = true;
@@ -960,20 +1024,19 @@ public class TabColumn_t
 
 public class Tab_t
 {
+	MainTop RInst;
 	public bool TabOk;
 	public string TabName;
 	public Dictionary<Int32, TabColumn_t> Columns;
 
-	ConsoleOut c;
-
 	private void errortype(string parameter)
 	{
-		c.Print(LogLevel_e.eError, "Bad type for field :" + parameter + "\n");
+		RInst.ConsoleInst.Print(LogLevel_e.eError, "Bad type for field :" + parameter + "\n");
 	}
 
-	public Tab_t(ConsoleOut _c, LuaTable tab)
+	public Tab_t(MainTop rInst, LuaTable tab)
 	{
-		c = _c;
+		rInst = RInst;
 		Columns = new Dictionary<Int32, TabColumn_t>();
 
 		TabOk = true;
@@ -993,7 +1056,7 @@ public class Tab_t
 				while(e.MoveNext())
 				{
 					Int32 keycolumnTable = Convert.ToInt32(e.Key) - 1;
-					Columns.Add(keycolumnTable, new TabColumn_t(c, (LuaTable)e.Value));
+					Columns.Add(keycolumnTable, new TabColumn_t(RInst, (LuaTable)e.Value));
 					TabOk = TabOk && Columns[keycolumnTable].ColumnOk;
 				}
 			}
@@ -1003,21 +1066,20 @@ public class Tab_t
 
 public class TabGroup_t
 {
+	MainTop RInst;
 	public bool TabGroupOk;
 	public bool NoExpandX, NoExpandY;
 
 	public Dictionary<Int32, Tab_t> Tabs;
 
-	ConsoleOut c;
-
 	private void errortype(string parameter)
 	{
-		c.Print(LogLevel_e.eError, "Bad type for field :" + parameter + "\n");
+		RInst.ConsoleInst.Print(LogLevel_e.eError, "Bad type for field :" + parameter + "\n");
 	}
 
-	public TabGroup_t(ConsoleOut _c, LuaTable group)
+	public TabGroup_t(MainTop rInst, LuaTable group)
 	{
-		c = _c;
+		RInst = rInst;
 		Tabs = new Dictionary<Int32, Tab_t>();
 
 		NoExpandX = false;
@@ -1047,7 +1109,7 @@ public class TabGroup_t
 			while(e.MoveNext())
 			{
 				Int32 keytabs = Convert.ToInt32(e.Key) - 1;
-				Tabs.Add(keytabs, new Tab_t(c, (LuaTable)e.Value));
+				Tabs.Add(keytabs, new Tab_t(RInst, (LuaTable)e.Value));
 				TabGroupOk = TabGroupOk && Tabs[keytabs].TabOk;
 			}
 		}
@@ -1056,6 +1118,7 @@ public class TabGroup_t
 
 public class ConfigData_t
 {
+	private MainTop RInst;
 	public bool ConfigOk;
 	public Int32 Baudrate;
 	public string Endian;
@@ -1074,11 +1137,9 @@ public class ConfigData_t
 
 	public bool Vue3D, Plot;
 
-	private ConsoleOut c;
-
-	public ConfigData_t(ConsoleOut _c, string _currentPath)
+	public ConfigData_t(MainTop rInst, string _currentPath)
 	{
-		c = _c;
+		RInst = rInst;
 		currentPath = _currentPath;
 		Vars = new Dictionary<Int32, Var_t>();
 		Solids = new Dictionary<string, Solid_t>();
@@ -1116,7 +1177,7 @@ public class ConfigData_t
 
 	private void errortype(string parameter)
 	{
-		c.Print(LogLevel_e.eError, "Bad type for field :" + parameter + "\n");
+		RInst.ConsoleInst.Print(LogLevel_e.eError, "Bad type for field :" + parameter + "\n");
 	}
 
 	public void Default(LuaTable pars)
@@ -1172,7 +1233,7 @@ public class ConfigData_t
 				while(e.MoveNext())
 				{
 					Int32 keyGroupTabs = Convert.ToInt32(e.Key) - 1;
-					TabGroups.Add(keyGroupTabs, new TabGroup_t(c, (LuaTable) e.Value));
+					TabGroups.Add(keyGroupTabs, new TabGroup_t(RInst, (LuaTable) e.Value));
 					ConfigOk = ConfigOk && TabGroups[keyGroupTabs].TabGroupOk;
 				}
 			}
@@ -1180,18 +1241,18 @@ public class ConfigData_t
 		else
 		{
 			ConfigOk = false;
-			c.Print(LogLevel_e.eError, "Error in Params: " +  
+			RInst.ConsoleInst.Print(LogLevel_e.eError, "Error in Params: " +  
 				" Mandatory fields not present\n");
 		}
 	}
 
 	public void Variable(LuaTable variableTable)
 	{
-		Var_t Var = new Var_t(c, variableTable);
+		Var_t Var = new Var_t(RInst, variableTable);
 		if (Vars.ContainsKey(Var.Index))
 		{
 			ConfigOk = false;
-			c.Print(LogLevel_e.eError, "Duplicate index " + Var.Index.ToString() + "\n");
+			RInst.ConsoleInst.Print(LogLevel_e.eError, "Duplicate index " + Var.Index.ToString() + "\n");
 		}
 		else
 		{
@@ -1202,14 +1263,14 @@ public class ConfigData_t
 
 	public void Solid(LuaTable solidTable)
 	{
-		Helper_t helper = new Helper_t(c);
+		Helper_t helper = new Helper_t(RInst.ConsoleInst);
 
-		Solid_t Solid = new Solid_t(this, c, helper.LuaTable2Dic(solidTable));
+		Solid_t Solid = new Solid_t(this, RInst, helper.LuaTable2Dic(solidTable));
 
 		if (Solids.ContainsKey(Solid.Name))
 		{
 			ConfigOk = false;
-			c.Print(LogLevel_e.eError, "Duplicate Solid name " + Solid.Name + "\n");
+			RInst.ConsoleInst.Print(LogLevel_e.eError, "Duplicate Solid name " + Solid.Name + "\n");
 		}
 		else
 		{
@@ -1231,15 +1292,15 @@ public class RowVBoxContainer : VBoxContainer
 
 public class ParametersGroups_t
 {
+	private MainTop RInst;
 	//Fields layouting
 	public Dictionary<Int32, Var_t> Vars;
-	private ConsoleOut c;
 	private string parametersName;
 	public bool ParametersOk;
 
-	public ParametersGroups_t(ConsoleOut _c, string _parametersName)
+	public ParametersGroups_t(MainTop rInst, string _parametersName)
 	{
-		c = _c;
+		RInst = rInst;
 		parametersName = _parametersName;
 		Vars = new Dictionary<Int32, Var_t>();
 	}
@@ -1251,7 +1312,7 @@ public class ParametersGroups_t
 	public void Solid(LuaTable pars){	}
 	public void Variable(LuaTable var)
 	{
-		Var_t Var = new Var_t(c, var);
+		Var_t Var = new Var_t(RInst, var);
 		if (Var.Parameter == parametersName)
 			Vars.Add(Var.Index, Var);
 	}
@@ -1261,11 +1322,11 @@ public class ParametersGroups_t
 	//////////////////////////////////////////////
 	public void Parameter(LuaTable var)
 	{
-		Var_t Var = new Var_t(c, var);
+		Var_t Var = new Var_t(RInst, var);
 		if (Var.Parameter == parametersName)
 			Vars.Add(Var.Index, Var);
 		else
-			c.Print(LogLevel_e.eWarning, 
+			RInst.ConsoleInst.Print(LogLevel_e.eWarning, 
 				" Variable " + Var.Index.ToString() + " is not tagged with same parameter," +
 				" value(s) not changed.\n");
 	}

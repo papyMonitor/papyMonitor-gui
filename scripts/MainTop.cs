@@ -24,9 +24,9 @@ public class MainTop : Panel
 
 	public ConfigData_t ConfigData;
 
-    private static Texture textOff = ResourceLoader.Load("res://icons/blackButton.png") as Texture;
-    private static Texture textGreen = ResourceLoader.Load("res://icons/greenButton.png") as Texture;
-    private static Texture textRed = ResourceLoader.Load("res://icons/redButton.png") as Texture;
+	private static Texture textOff = ResourceLoader.Load("res://icons/blackButton.png") as Texture;
+	private static Texture textGreen = ResourceLoader.Load("res://icons/greenButton.png") as Texture;
+	private static Texture textRed = ResourceLoader.Load("res://icons/redButton.png") as Texture;
 
 	private int cur_joy = -1;
 	public Label joyPadNameInst;
@@ -54,14 +54,14 @@ public class MainTop : Panel
 	}
 
 	public override void _Process(float delta)
-    {
+	{
 		// Display the name of the joypad if we haven't already.
 		if (0 != cur_joy)
 		{
 			cur_joy = 0;
 			joyPadNameInst.Text = Input.GetJoyName(0) + "\n" + Input.GetJoyGuid(0);
 		}
-    }
+	}
 
 	//Called whenever a joypad has been connected or disconnected.
 	private void inputJoyConnectionChanged(int device_id, bool connected)
@@ -103,9 +103,9 @@ public class MainTop : Panel
 		var children = rootNode.GetChildren();
 		foreach (Node n in children)
 		{
-            if (n is Solid_t m)
+			if (n is Solid_t m)
 				m.Free();
-        }
+		}
 
 		// At least one solid must have a parent of type "Root"
 		bool rootScene = false;
