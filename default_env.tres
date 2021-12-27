@@ -10,5 +10,6 @@ sun_energy = 4.56
 background_mode = 2
 background_sky = SubResource( 1 )
 background_color = Color( 0.466667, 0.243137, 0.243137, 1 )
+background_energy = 1.45
 ambient_light_color = Color( 1, 1, 1, 1 )
 ambient_light_energy = 9.49
