@@ -16,6 +16,10 @@ This tool is already used in production but -for sure- still has some bugs to di
 
 [papyMonitor documentation](https://papymonitor.github.io/papyMonitor-doc)
 
+## Discussions
+
+Feel free to post comments on [Discussions page](https://github.com/papyMonitor/papyMonitor-gui/discussions)
+
 ## Credits
 
 Thanks to Godot Engine developpers who have done this excellent multiplatform development tool
