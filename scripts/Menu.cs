@@ -600,11 +600,16 @@ public class Menu : HBoxContainer
             // Set the value in ConfigData
             RInst.ConfigData.Vars[keyVar].Data[keyData].Value = Value;
 
-            updateDisplayValue(keyVar, keyData);
+            // Check if this keyvar has a widget
+            // Can be not in the layout
+            if (RInst.ConfigData.Vars[keyVar].RootWigdet != null) {
+
+                updateDisplayValue(keyVar, keyData);
             
-            // Add point to curve if required
-            if (RInst.ConfigData.Vars[keyVar].Data[keyData].CanPlot)
-                chartInst.AddElement(keyVar+keyData, Value);
+                // Add point to curve if required
+                if (RInst.ConfigData.Vars[keyVar].Data[keyData].CanPlot)
+                    chartInst.AddElement(keyVar+keyData, Value);
+            }
         }
         catch (Exception ex)
         {
