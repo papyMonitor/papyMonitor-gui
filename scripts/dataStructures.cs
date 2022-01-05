@@ -605,23 +605,23 @@ public class Solid_t : Spatial
 						AddChild(pivot);
 					}
 					// Custom loaded mesh
-					// PackedSceneGLTF model = new PackedSceneGLTF();
-					// string fullPath = configData.currentPath + "/" + value;
-					// if (System.IO.File.Exists(fullPath))
-					// {
-					// 	Node node =  model.ImportGltfScene(fullPath);
-					// 	sp.AlbedoColor = new Color(Color.r, Color.g, Color.b);
+					PackedSceneGLTF model = new PackedSceneGLTF();
+					string fullPath = configData.currentPath + "/" + value;
+					if (System.IO.File.Exists(fullPath))
+					{
+						Node node =  model.ImportGltfScene(fullPath);
+						sp.AlbedoColor = new Color(Color.r, Color.g, Color.b);
 
-					// 	var children = node.GetChildren();
-					// 	foreach (Node n in children)
-					// 	{
-					// 		if (n is MeshInstance s)
-					// 		{
-					// 			s.MaterialOverride = sp;
-					// 		}
-					// 	}
-					// 	AddChild(node);
-					// }	
+						var children = node.GetChildren();
+						foreach (Node n in children)
+						{
+							if (n is MeshInstance s)
+							{
+								s.MaterialOverride = sp;
+							}
+						}
+						AddChild(node);
+					}	
 				}
 			}	
 
@@ -1027,6 +1027,7 @@ public class Tab_t
 	MainTop RInst;
 	public bool TabOk;
 	public string TabName;
+	public bool Scroll;
 	public Dictionary<Int32, TabColumn_t> Columns;
 
 	private void errortype(string parameter)
@@ -1039,9 +1040,14 @@ public class Tab_t
 		rInst = RInst;
 		Columns = new Dictionary<Int32, TabColumn_t>();
 
+		Scroll = false;
+
 		TabOk = true;
 		try { TabName = (string)tab["TabName"]; } 
 		catch { errortype("TabName"); TabOk = false;}
+
+		try { Scroll = Convert.ToBoolean(tab["Scroll"]); } 
+		catch { errortype("Scroll"); TabOk = false;}
 
 		// Retrieve Data related
 		try { LuaTable test = (LuaTable)tab["Columns"]; } 

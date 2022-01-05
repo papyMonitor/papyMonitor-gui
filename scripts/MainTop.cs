@@ -188,6 +188,9 @@ public class MainTop : Panel
 	
 	private void displayTabs()
 	{
+		var scrollInst = new ScrollContainer();
+		var vBoxInst = new VBoxContainer();
+
 		var children = HBoxTabGroupsInst.GetChildren();
 		foreach (Node c in children)
 		{
@@ -335,7 +338,7 @@ public class MainTop : Panel
 
 					ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].Wigdet = widgetBoolInst;
 					
-					if (ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].BitText != "NA")
+					if (ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].BitText != "")
 					{
 						(widgetBoolInst.FindNode("Label_BitNumber") as Label).Text = bit.ToString();
 
