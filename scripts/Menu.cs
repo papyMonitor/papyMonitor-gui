@@ -626,8 +626,49 @@ public class Menu : HBoxContainer
         // Refresh the on monitoring flag
         (RInst.ConfigData.Vars[keyVar].RootWigdet as widget).setOnMonitoring();
 
+        // Display boolean
+        if (RInst.ConfigData.Vars[keyVar].Data[keyData].BoolsOnU8)
+        {
+            if (RInst.ConfigData.Vars[keyVar].Data[keyData].StatesDisplay)
+			{
+                widgetStates widgetStatesInst = (widgetStates)RInst.ConfigData.Vars[keyVar].Data[keyData].Wigdet;
+                ItemList ItemListInst = (widgetStatesInst.FindNode("ItemList") as ItemList);
+                Byte v = Convert.ToByte(Value);
+
+                for (Byte bit = 0; bit < ItemListInst.GetItemCount(); bit++)
+                {
+                    if( ((v & (1<<bit)) >> bit) == 1)
+                        ItemListInst.SetItemCustomBgColor(bit, new Color(0, 1, 0));
+                    else
+                        ItemListInst.SetItemCustomBgColor(bit, new Color(0, 0, 0));
+                }
+            }
+            else
+            {
+                // Refresh each bit
+                for (byte bit = 0; bit < 8; bit++)
+                {
+                    widgetBool widgetBoolInst = (widgetBool)RInst.ConfigData.Vars[keyVar].Data[keyData].Bits[bit].Wigdet;
+                    TextureRect texture = widgetBoolInst.FindNode("TextureRect_BitVal") as TextureRect;
+
+                    string color = RInst.ConfigData.Vars[keyVar].Data[keyData].Bits[bit].Color;
+
+                    bool bitValue = (Convert.ToByte(Value) & (1 << bit)) != 0;
+
+                    if (bitValue)
+                    {
+                        if (color=="red")
+                            texture.Texture = textRed;
+                        else
+                            texture.Texture = textGreen;
+                    }
+                    else
+                        texture.Texture = textOff;
+                }  
+            }                     
+        }
         // Display NOT boolean
-        if (!RInst.ConfigData.Vars[keyVar].Data[keyData].BoolsOnU8)
+        else
         {
             if (RInst.ConfigData.Vars[keyVar].WidgetType == "normal")
             {
@@ -671,31 +712,7 @@ public class Menu : HBoxContainer
                 {
                     VSliderInst.Value = Convert.ToSingle(Value);
                 }
-            }                                       
-        }
-        // Display boolean
-        else
-        {
-            // Refresh each bit
-            for (byte bit = 0; bit < 8; bit++)
-            {
-                widgetBool widgetBoolInst = (widgetBool)RInst.ConfigData.Vars[keyVar].Data[keyData].Bits[bit].Wigdet;
-                TextureRect texture = widgetBoolInst.FindNode("TextureRect_BitVal") as TextureRect;
-
-                string color = RInst.ConfigData.Vars[keyVar].Data[keyData].Bits[bit].Color;
-
-                bool bitValue = (Convert.ToByte(Value) & (1 << bit)) != 0;
-
-                if (bitValue)
-                {
-                    if (color=="red")
-                        texture.Texture = textRed;
-                    else
-                        texture.Texture = textGreen;
-                }
-                else
-                    texture.Texture = textOff;
-            }
+            } 
         }
     }
 }

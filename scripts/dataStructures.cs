@@ -85,6 +85,18 @@ public class Helper_t
 	}
 }
 
+public class State_t
+{
+	public string StateText;
+	public string Color;
+
+	public State_t(string stateText)
+	{
+		StateText = stateText;
+		Color = "green";
+	}
+}
+
 public class Bit_t
 {
 	public string BitText;
@@ -97,7 +109,7 @@ public class Bit_t
 	public Bit_t(Byte bit)
 	{
 		Color = "green";
-		BitText = "Bit" + bit.ToString();
+		BitText = "";
 		CanEdit = false;
 	}
 }
@@ -129,6 +141,9 @@ public class Data_t
 				}
 			}
 	}
+	public bool StatesDisplay;
+	public bool Exclusive;
+
 	public Bit_t[] Bits;
 	public object Value;
 	public UInt32 Precision;
@@ -145,6 +160,9 @@ public class Data_t
 		CanEdit = false;
 		CanPlot = false;
 		SpinBox = false;
+		_boolsOnU8 = false;
+		StatesDisplay = false;
+		Exclusive = false;
 		Precision = 3;	
 		SingleText = "";
 
@@ -176,6 +194,18 @@ public class Data_t
 				catch { helper.errortype("BoolsOnU8"); DataOk = false;}
 			}
 
+			if (data["StatesDisplay"] != null)
+			{
+				try { StatesDisplay = Convert.ToBoolean(data["StatesDisplay"]); } 
+				catch { helper.errortype("StatesDisplay"); DataOk = false;}
+			}
+
+			if (data["Exclusive"] != null)
+			{
+				try { Exclusive = Convert.ToBoolean(data["Exclusive"]); } 
+				catch { helper.errortype("Exclusive"); DataOk = false;}
+			}
+
 			if (data["SingleText"] != null)
 			{
 				try { SingleText = (string)data["SingleText"]; } 
@@ -202,6 +232,13 @@ public class Data_t
 
 			if (BoolsOnU8)
 			{
+				if (_type != VarType_e.Byte)
+				{
+					RInst.ConsoleInst.Print(LogLevel_e.eError, 
+						"BoolsOnU8 can be true only for variables of type \"B\"\n");
+					DataOk = false;
+				}
+
 				if (data["BitsTexts"] != null)
 				{
 					try
@@ -245,6 +282,24 @@ public class Data_t
 						}
 					} 
 					catch { helper.errortype("BitsColors"); DataOk = false;}
+				}
+				else
+				{
+					if(CanEdit)
+						for ( Byte bit=0; bit<8; bit++ )
+							Bits[bit].CanEdit = true;
+				}
+			}	
+
+			if (StatesDisplay)
+			{
+				if (_type != VarType_e.Byte)
+				{
+					RInst.ConsoleInst.Print(LogLevel_e.eError, 
+						"StatesDisplay can be true only for variables of type \"B\" ");
+					RInst.ConsoleInst.Print(LogLevel_e.eError, 
+						"and with BoolsOnU8 = true \"B\"\n");
+					DataOk = false;
 				}
 			}	
 		}
@@ -317,7 +372,7 @@ public class Var_t
 				catch { helper.errortype("HideData"); VarOk = false; }
 			}
 
-			if(vars["WidgetType"]!=null)
+			if(vars["WidgetType"] != null)
 			{
 				try { WidgetType = (string)vars["WidgetType"]; } 
 				catch { helper.errortype("WidgetType"); VarOk = false; }

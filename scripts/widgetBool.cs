@@ -182,10 +182,8 @@ public class widgetBool : HBoxContainer
 
 	private void send(Byte currentByte)
 	{
-		string hexValue = currentByte.ToString();
-
 		RInst.ComPortInst.SendCommand(RInst.ConfigData.SetValue, (Byte)(BaseIndex+ArrIdx), 
-					(VarType_e)"B"[0], hexValue);
+					(VarType_e)"B"[0], currentByte.ToString());
 	}
 }
 

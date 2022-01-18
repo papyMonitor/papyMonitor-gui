@@ -298,6 +298,7 @@ public class MainTop : Panel
 		var widgetSliderV = ResourceLoader.Load("res://scenes/widgetSliderV.tscn") as PackedScene;
 		var widgetBool = ResourceLoader.Load("res://scenes/widgetBool.tscn") as PackedScene;
 		var widgetButton = ResourceLoader.Load("res://scenes/widgetButton.tscn") as PackedScene;
+		var widgetStates = ResourceLoader.Load("res://scenes/widgetStates.tscn") as PackedScene;
 
 		var scrollInst = new ScrollContainer();
 		var vBoxInst = new VBoxContainer();
@@ -324,40 +325,61 @@ public class MainTop : Panel
 			// Field is boolsOnU8
 			if (ConfigData.Vars[varIdx].Data[dataKey].BoolsOnU8)
 			{
-				for (Byte bit=0; bit<8; bit++)
+				if (ConfigData.Vars[varIdx].Data[dataKey].StatesDisplay)
 				{
-					widgetBool widgetBoolInst = widgetBool.Instance() as widgetBool;
-					widgetBoolInst.Name = "WSV" + dataKey.ToString() + "BIT" + bit.ToString();
-					widgetBoolInst.BaseIndex = varIdx;
-					widgetBoolInst.ArrIdx = dataKey;
-					widgetBoolInst.bitIndex = bit;
-					if (!ConfigData.Vars[varIdx].Scroll)
-						elemInst.AddChild(widgetBoolInst);
-					else
-						vBoxInst.AddChild(widgetBoolInst);
-
-					ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].Wigdet = widgetBoolInst;
+					widgetStates widgetStatesInst = widgetStates.Instance() as widgetStates;
+					widgetStatesInst.Name = "WST" + dataKey.ToString();
+					widgetStatesInst.BaseIndex = varIdx;
+					elemInst.AddChild(widgetStatesInst);
+					ConfigData.Vars[varIdx].Data[dataKey].Wigdet = widgetStatesInst;
+					ItemList ItemListInst = (widgetStatesInst.FindNode("ItemList") as ItemList);
 					
-					if (ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].BitText != "")
+					for (Byte bit=0; bit<8; bit++)
 					{
-						(widgetBoolInst.FindNode("Label_BitNumber") as Label).Text = bit.ToString();
-
-						(widgetBoolInst.FindNode("Label_BitName") as Label).Text = 
-							 ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].BitText;
-
-						// Show/Hide the edit button related to canBitEditX
-						(widgetBoolInst.FindNode("Button_SetBit") as Button).Visible = 
-							ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].CanEdit ? true : false;
-
-						(widgetBoolInst.FindNode("Button_ClearBit") as Button).Visible = 
-							ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].CanEdit ? true : false;
+						if (ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].BitText != "")
+						{
+							ItemListInst.AddItem(ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].BitText, null, false);
+							ItemListInst.SetItemCustomBgColor(ItemListInst.GetItemCount()-1, new Color(0, 0, 0));
+						}
 					}
-					else
+				}
+				else
+				{
+					for (Byte bit=0; bit<8; bit++)
 					{
-						(widgetBoolInst.FindNode("Label_BitName") as Label).Visible = false;
-						(widgetBoolInst.FindNode("Button_SetBit") as Button).Visible = false;
-						(widgetBoolInst.FindNode("Button_ClearBit") as Button).Visible = false;
-						(widgetBoolInst.FindNode("TextureRect_BitVal") as TextureRect).Visible = false;
+						widgetBool widgetBoolInst = widgetBool.Instance() as widgetBool;
+						widgetBoolInst.Name = "WSV" + dataKey.ToString() + "BIT" + bit.ToString();
+						widgetBoolInst.BaseIndex = varIdx;
+						widgetBoolInst.ArrIdx = dataKey;
+						widgetBoolInst.bitIndex = bit;
+						if (!ConfigData.Vars[varIdx].Scroll)
+							elemInst.AddChild(widgetBoolInst);
+						else
+							vBoxInst.AddChild(widgetBoolInst);
+
+						ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].Wigdet = widgetBoolInst;
+						
+						if (ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].BitText != "")
+						{
+							(widgetBoolInst.FindNode("Label_BitNumber") as Label).Text = bit.ToString();
+
+							(widgetBoolInst.FindNode("Label_BitName") as Label).Text = 
+								ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].BitText;
+
+							// Show/Hide the edit button related to canBitEditX
+							(widgetBoolInst.FindNode("Button_SetBit") as Button).Visible = 
+								ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].CanEdit ? true : false;
+
+							(widgetBoolInst.FindNode("Button_ClearBit") as Button).Visible = 
+								ConfigData.Vars[varIdx].Data[dataKey].Bits[bit].CanEdit ? true : false;
+						}
+						else
+						{
+							(widgetBoolInst.FindNode("Label_BitName") as Label).Visible = false;
+							(widgetBoolInst.FindNode("Button_SetBit") as Button).Visible = false;
+							(widgetBoolInst.FindNode("Button_ClearBit") as Button).Visible = false;
+							(widgetBoolInst.FindNode("TextureRect_BitVal") as TextureRect).Visible = false;
+						}
 					}
 				}
 			}
@@ -384,7 +406,7 @@ public class MainTop : Panel
 							(widgetSimpleValueInst.FindNode("Label_Index") as Label).Text = dataKey.ToString();
 						else
 							(widgetSimpleValueInst.FindNode("Label_Index") as Label).Text =
-												 ConfigData.Vars[varIdx].Data[dataKey].SingleText;
+													ConfigData.Vars[varIdx].Data[dataKey].SingleText;
 					}
 
 					// Check for field editing CanEdit
@@ -480,6 +502,7 @@ public class MainTop : Panel
 						ConfigData.Vars[varIdx].Data[dataKey].Wigdet = widgetButtonInst;
 					}
 				}
+
 			}
 		}
 	}

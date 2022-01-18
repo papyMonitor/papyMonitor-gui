@@ -1,53 +1,23 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/widgetStates.cs" type="Script" id=1]
 
+[sub_resource type="Theme" id=1]
+
 [node name="widgetStates" type="VBoxContainer"]
-anchor_right = 1.0
-size_flags_horizontal = 3
+margin_right = 1920.0
+margin_bottom = 81.0
+size_flags_vertical = 3
+theme = SubResource( 1 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="ItemList" type="ItemList" parent="."]
 margin_right = 1920.0
-margin_bottom = 20.0
+margin_bottom = 81.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-alignment = 2
-
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer"]
-show_behind_parent = true
-margin_right = 1920.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
-size_flags_horizontal = 3
-size_flags_vertical = 3
-color = Color( 0.572549, 0.254902, 0.254902, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="LabelState" type="Label" parent="HBoxContainer/ColorRect"]
-anchor_right = 1.0
-margin_top = 3.0
-margin_bottom = 14.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "State"
-align = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PopupPanel" type="PopupPanel" parent="."]
-margin_right = 8.0
-margin_bottom = 8.0
-
-[node name="ColorPicker" type="ColorPicker" parent="PopupPanel"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 314.0
-margin_bottom = 466.0
-presets_enabled = false
+auto_height = true
+same_column_width = true
