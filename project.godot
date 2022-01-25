@@ -21,10 +21,14 @@ settings/stdout/verbose_stdout=true
 
 [display]
 
-window/size/width=1920
+window/size/width=1500
 window/size/height=1080
 mouse_cursor/custom_image="res://icons/pointer@1x.png"
 mouse_cursor/custom_image_hotspot=Vector2( 15, 15 )
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/dockable_container/plugin.cfg" )
 
 [global]
 
