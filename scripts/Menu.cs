@@ -28,10 +28,13 @@ public class Menu : HBoxContainer
     private Label labelFooterInfoInst;
     private MenuButton fileMenuInst, openPortMenuInst, parametersInst;
     private HBoxContainer menuInst;
-    private PopupMenu openPortMenuElementsInst, fileMenuElementsInst, parametersElementsInst;
+    private PopupMenu fileMenuElementsInst, parametersElementsInst;
+    public PopupMenu openPortMenuElementsInst;
     private ConsoleOut ConsoleInst;
 
     //
+    private const string OPENCONNECTION_TXT = "Open connection";
+    private const string CLOSECONNECTION_TXT = "Close connection";
     private const int ID_OPEN_FILE = 0;
     private const int ID_EXIT = 1;
 
@@ -65,9 +68,10 @@ public class Menu : HBoxContainer
 
         menuInst = RInst.FindNode("Menu") as HBoxContainer;
 
-        openPortMenuInst = FindNode("MenuButton_OpenPort") as MenuButton;
-        openPortMenuInst.Text = "Open port";
+        openPortMenuInst = FindNode("MenuButton_OpenConnection") as MenuButton;
+        openPortMenuInst.Text = OPENCONNECTION_TXT;
         openPortMenuElementsInst = openPortMenuInst.GetPopup();
+        openPortMenuElementsInst.Connect("id_pressed", this, nameof(MENU_onOpenPortPressed));
 
         fileMenuInst = FindNode("MenuButton_File") as MenuButton;
         fileMenuElementsInst = fileMenuInst.GetPopup();
@@ -94,24 +98,6 @@ public class Menu : HBoxContainer
         fileMenuElementsInst.Connect("id_pressed", this, nameof(MENU_onFilePressed));
 
         helper = new UtilityFunctions();
-    }
-
-    private void updatePortListToMenu()
-    {
-        // Scan all available serial ports and put on the first menu
-        List<string> ports = new List<string>(RInst.ComPortInst.GetPorts());
-
-        // Fill the port menu with all the ports found
-        var idx = 0;
-
-        openPortMenuElementsInst.Clear();
-
-        if (!RInst.ComPortInst.IsOpen())
-        {
-            foreach (string port in ports)
-                openPortMenuElementsInst.AddItem(port, idx++);
-            openPortMenuElementsInst.Connect("id_pressed", this, nameof(MENU_onOpenPortPressed));
-        }
     }
 
     private void updateParametersMenu()
@@ -145,7 +131,6 @@ public class Menu : HBoxContainer
             parametersElementsInst.AddChild(submenu);
             parametersElementsInst.AddSubmenuItem(ParametersNames[idx]+" ", ParametersNames[idx], idx);
         }
-            
 
         if (ParametersNames.Count>0)
             parametersInst.Disabled = false; 
@@ -190,34 +175,35 @@ public class Menu : HBoxContainer
         }
     }
     
-    private void MENU_onOpenPortPressed(int id)
+    public void MENU_onOpenPortPressed(int id)
     {
         string portName = openPortMenuElementsInst.GetItemText(id);
 
         if (!RInst.ComPortInst.IsOpen())
         {
             // Port was closed, open it
-            RInst.ComPortInst.Open(portName, RInst.ConfigData.Baudrate);
+            RInst.ComPortInst.Open(portName);
 
             if (RInst.ComPortInst.IsOpen())
             {
                 startupFirstSerialReceive = true;
                 ConsoleInst.Print(LogLevel_e.eInfo, portName + 
                     " openned @ " + RInst.ConfigData.Baudrate.ToString() + " bauds\n");
-                openPortMenuInst.Text = "Port";
+                openPortMenuInst.Text = "Connection";
                 openPortMenuElementsInst.Clear();
                 openPortMenuElementsInst.AddItem("Close", 0);
             }
             else
-                ConsoleInst.Print(LogLevel_e.eError, "Can't open port\n");
+                ConsoleInst.Print(LogLevel_e.eError, "Can't open connection\n");
         }
         else
         {
             // Port was openned, close it            
             RInst.ComPortInst.Close();
-            ConsoleInst.Print(LogLevel_e.eInfo, "Port closed\n");
-            openPortMenuInst.Text = "Open port";
-            updatePortListToMenu();
+            ConsoleInst.Print(LogLevel_e.eInfo, "Connection closed\n");
+            openPortMenuInst.Text = OPENCONNECTION_TXT;
+            openPortMenuElementsInst.Clear();
+            RInst.ComPortInst.updatePortListToMenu();
         }
     }
 
@@ -230,6 +216,8 @@ public class Menu : HBoxContainer
 
     private void onLoadFileSelected(string file)
     {
+        bool ok = false;
+
         // ini file
         if (!opensaveParamFile)
         {
@@ -242,11 +230,6 @@ public class Menu : HBoxContainer
             else
             {
                 ConsoleInst.Print(LogLevel_e.eInfo, "File " + file + " found\n");
-
-                // Close port if user decide to change the config file and the file is found
-                RInst.ComPortInst.Close();
-                ConsoleInst.Print(LogLevel_e.eInfo, "Port closed\n");
-                updatePortListToMenu();
 
                 // Get all the iniFile content as string
                 ini = iniFile.GetAsText();
@@ -263,26 +246,53 @@ public class Menu : HBoxContainer
                     state.DoString(ini);
                     // Display port menu
                     openPortMenuInst.Disabled = false;
+                    parametersInst.Disabled = false;
+                    ok = true;
                 }
                 catch(Exception ex)
                 {
                     ConsoleInst.Print(LogLevel_e.eError, ex.Message + "\n");
                     // Bad file format, hide port menu
                     openPortMenuInst.Disabled = true;
+                    parametersInst.Disabled = true;
                 }
+
+                // Clear menu in case of further error
+                openPortMenuElementsInst.Clear();
+                ParametersNames.Clear();
+                // Close old connection if any
+                RInst.ComPortInst.Close();
 
                 ////////////////////////////////////////////
                 // If parsing ini file was Ok, we display data
                 ////////////////////////////////////////////
-                if (RInst.ConfigData.ConfigOk)
-                    RInst.Display();
-
-                ////////////////////////////////////////////
-                // Update the parameters menu
-                // For the user, create as many load/save parameters NAME
-                // as NAME in the Parameter fields
-                ////////////////////////////////////////////            
-                updateParametersMenu();
+                if (ok && RInst.ConfigData.ConfigOk)
+                {
+                    if (RInst.Display())
+                    {
+                        // Set the new connection type (including updating menu)
+                        RInst.ComPortInst.SetConnectionType(RInst.ConfigData.Socket);
+                        
+                        ////////////////////////////////////////////
+                        // Update the parameters menu
+                        // For the user, create as many load/save parameters NAME
+                        // as NAME in the Parameter fields
+                        ////////////////////////////////////////////            
+                        updateParametersMenu();
+                    }
+                    else
+                    {
+                        // Something went wrong, hide port/parameter menu
+                        openPortMenuInst.Disabled = true;
+                        parametersInst.Disabled = true;
+                    }
+                }
+                else
+                {
+                    // Something went wrong, hide port/parameter menu
+                    openPortMenuInst.Disabled = true;
+                    parametersInst.Disabled = true;
+                }                
             }
         }
         // parameter file
@@ -434,7 +444,7 @@ public class Menu : HBoxContainer
         {
             if (!startupFirstSerialReceive)
             {
-                if (RInst.ComPortInst.GetPendingBytes() > 0)
+                if (RInst.ComPortInst.DataAvailable())
                     parseLines(RInst.ComPortInst.ReadPendingBytes());
             }
             else
@@ -541,8 +551,6 @@ public class Menu : HBoxContainer
             }
         }
     }
-
-
 
     private bool keepThisIndex = true;
     private Int32 indexKeeped = -1;

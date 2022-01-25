@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Net.Sockets;
 
 public class ComPort : Timer
 {
@@ -23,8 +24,13 @@ public class ComPort : Timer
 
     private Queue<CmdPool_t> CmdPool;
 
+    private bool portReady;
     private MainTop RInst;
     public static SerialPort port;
+    private bool isSocket;
+    private TcpClient clientSocket;
+    private NetworkStream stream;
+    private Byte[] dataRX;
 
     private UtilityFunctions helper;
 
@@ -34,10 +40,8 @@ public class ComPort : Timer
         RInst = GetNode<MainTop>("/root/Main");
         CmdPool = new Queue<CmdPool_t>();
         helper = new UtilityFunctions();
-
-        port = new SerialPort();
-        port.Parity = Parity.None;
-        port.StopBits = StopBits.One;
+        isSocket = false;
+        portReady = false;
     }
 
     public override void _Process(float delta)
@@ -50,49 +54,148 @@ public class ComPort : Timer
         
     }
 
-    public string[] GetPorts()
+    private string[] GetPorts()
     {
         return SerialPort.GetPortNames();
     }
 
-    public void Open(string portname, Int32 baudrate)
+    public void updatePortListToMenu()
     {
-        port.PortName = portname;
-        port.BaudRate  = baudrate;
-        try
+        List<string> ports;
+
+        if (!isSocket)
         {
-            port.Open();
-            port.DiscardInBuffer();
+            // Scan all available serial ports and put on the first menu
+            ports = new List<string>(RInst.ComPortInst.GetPorts());
         }
-        catch(Exception ex)
+        else
         {
-            GetNode<MainTop>("/root/Main").ConsoleInst.Print(LogLevel_e.eError, ex.Message + "\n");
+            ports = new List<string>();
+            ports.Add("Socket");
+        }
+
+        // Fill the port menu with all the ports found
+        var idx = 0;
+        foreach (string port in ports)
+            RInst.MenuInst.openPortMenuElementsInst.AddItem(port, idx++);
+    }
+
+    public void SetConnectionType(bool isSocketConnection)
+    {
+        isSocket = isSocketConnection;
+        portReady = false;
+        // Update the ports accessibles
+        updatePortListToMenu();
+    }
+
+    public void Open(string portname)
+    {
+        if (!isSocket)
+        {
+            try
+            {
+                port = new SerialPort();
+                port.Parity = Parity.None;
+                port.StopBits = StopBits.One;
+                port.BaudRate = RInst.ConfigData.Baudrate;
+                port.PortName = portname;
+                port.Open();
+                port.DiscardInBuffer();
+                portReady = true;
+            }
+            catch(Exception ex)
+            {
+                GetNode<MainTop>("/root/Main").ConsoleInst.Print(LogLevel_e.eError, ex.Message + "\n");
+                portReady = false;
+            }
+        }
+        else
+        {   
+            try 
+            {
+                clientSocket = new TcpClient(RInst.ConfigData.SocketIP, Convert.ToInt32(RInst.ConfigData.SocketPort));
+                stream = clientSocket.GetStream();
+                dataRX = new Byte[256];
+                portReady = true;
+            }
+            catch(Exception ex)
+            {
+                GetNode<MainTop>("/root/Main").ConsoleInst.Print(LogLevel_e.eError, ex.Message + "\n");
+                portReady = false;
+            }
         }
     }
 
     public bool IsOpen()
     {
-        return port.IsOpen;
+        if (portReady)
+        {
+            if (!isSocket)
+            {
+                return port.IsOpen;
+            }
+            else
+            {
+                return clientSocket.Connected;
+            }
+        }
+        else
+            return false;
     }
 
     public void Close()
     {
-        port.Close();
+        if (portReady)
+        {
+            if (!isSocket)
+            {
+                port.Close();
+            }
+            else
+            {
+                clientSocket.Close();
+            }    
+        }    
     }
 
-    public Int32 GetPendingBytes()
-    {
-        return port.BytesToRead;
+    public bool DataAvailable()
+    {      
+        if (!isSocket)
+        {
+            return port.BytesToRead > 0;
+        }
+        else
+        {
+            return stream.DataAvailable;
+        }
     }
 
     public string ReadPendingBytes()
     {
-        return port.ReadExisting();
+        if (!isSocket)
+        {
+            return port.ReadExisting();
+        }
+        else
+        {
+            Int32 bytes = stream.Read(dataRX, 0, dataRX.Length);
+            return System.Text.Encoding.ASCII.GetString(dataRX, 0, bytes);
+        }
     }
 
     private void WriteString(string msg)
     {
-        port.Write(msg);
+        if (!isSocket)
+        {
+            port.Write(msg);
+        }
+        else
+        {
+            Byte[] dataTX = System.Text.Encoding.ASCII.GetBytes(msg);
+            // Test if server not disconnected
+            if (clientSocket.Connected)
+                stream.Write(dataTX, 0, dataTX.Length);
+        }
     }  
 
     public void SendCommand(char Cmd, Byte Index, VarType_e Type, string Value)

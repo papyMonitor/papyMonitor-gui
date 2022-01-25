@@ -1182,6 +1182,9 @@ public class ConfigData_t
 	private MainTop RInst;
 	public bool ConfigOk;
 	public Int32 Baudrate;
+	public bool Socket;
+	public string SocketIP;
+	public string SocketPort;
 	public string Endian;
 	//Commands from Monitor to target
 	public char SetValue;
@@ -1271,6 +1274,19 @@ public class ConfigData_t
 
 			try { SampleTimeHW = Convert.ToSingle(pars["SampleTimeHW"]); } 
 			catch { errortype("SampleTimeHW"); ConfigOk = false; }
+
+			if (pars["Socket"] != null)
+			{
+				try { Socket = Convert.ToBoolean(pars["Socket"]); } 
+				catch { errortype("Socket"); ConfigOk = false; }
+
+				if (Socket) {
+					try { SocketIP = ((string)pars["SocketIP"]); } 
+					catch { errortype("SocketIP"); ConfigOk = false; }
+					try { SocketPort = ((string)pars["SocketPort"]); } 
+					catch { errortype("SocketPort"); ConfigOk = false; }
+				}
+			}
 
 			if (pars["Vue3D"] != null)
 			{
