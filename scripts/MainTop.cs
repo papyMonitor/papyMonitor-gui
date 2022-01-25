@@ -5,13 +5,17 @@ public class MainTop : Panel
 {
 	// Classes instances
 	public ComPort ComPortInst;
+	public Menu MenuInst;
 
 	private const Int32 MAX_SIGNALS_PER_COLUMN = 15;
 
 	private Spatial visu3DInst;
-	private VBoxContainer VBoxPlotInst;
+
+	private Container DockableContainerInst;
+
 	private HBoxContainer HBoxTabGroupsInst;
-	private VBoxContainer VBoxVisu3DInst;
+	private VBoxContainer View3DInst;
+	private VBoxContainer Plot2DInst;
 
 	private Chart ChartInst;
 	private VBoxContainer ControlAreaInst;
@@ -35,9 +39,10 @@ public class MainTop : Panel
 	{
 		// Class instance
 		visu3DInst = FindNode("visu3D") as Spatial;
-		VBoxPlotInst = FindNode("VBoxPlot") as VBoxContainer;
+		DockableContainerInst = FindNode("DockableContainer") as Container;
 		HBoxTabGroupsInst = FindNode("HBoxTabGroups") as HBoxContainer;
-		VBoxVisu3DInst = FindNode("VBoxVisu3D") as VBoxContainer;
+		Plot2DInst = FindNode("2D Plot") as VBoxContainer;
+		View3DInst = FindNode("3D View") as VBoxContainer;
 		ChartInst = (FindNode("drawEngine") as VBoxContainer).FindNode("Chart") as Chart;
 		ControlAreaInst = (FindNode("drawEngine") as VBoxContainer).FindNode("controlArea") as VBoxContainer;
 		joyPadNameInst = ControlAreaInst.FindNode("JoyPadName") as Label;
@@ -51,6 +56,7 @@ public class MainTop : Panel
 		SigPan1Inst2.Visible = false;
 
 		ComPortInst = FindNode("ComPort") as ComPort;
+		MenuInst = FindNode("Menu") as Menu;
 	}
 
 	public override void _Process(float delta)
@@ -80,10 +86,21 @@ public class MainTop : Panel
 		ConsoleInst.Clear();
 	}
 
-	public void Display()
+	public bool Display()
 	{
-		if (checkTabsIndices())
+		bool ok = checkTabsIndices();
+
+		if (ok)
 		{
+			DockableContainerInst.Visible = true;
+			// Hide Things that are not needed
+			View3DInst.Visible = ConfigData.Vue3D;
+			Plot2DInst.Visible = ConfigData.Plot;
+
+			VBoxContainer TabContInst = new VBoxContainer();
+			Button monBoutonInst = new Button();
+			monBoutonInst.Text = "test";
+
 			displayChartSignalsPanels();
 			ChartInst.Init();
 
@@ -92,6 +109,8 @@ public class MainTop : Panel
 
 			display3D();
 		}
+
+		return ok;
 	}
 
 	private void display3D()
@@ -165,10 +184,6 @@ public class MainTop : Panel
 
 	private void displayChartSignalsPanels()
 	{
-		// Hide Things that are not needed
-		VBoxVisu3DInst.Visible = ConfigData.Vue3D;
-		VBoxPlotInst.Visible = ConfigData.Plot;	
-
 		// Remove children of signals plot
 		VBoxContainer SigPan1Inst = (FindNode("drawEngine") as VBoxContainer).FindNode("signalsPanel") as VBoxContainer;
 		var children = SigPan1Inst.GetChildren();

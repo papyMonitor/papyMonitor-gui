@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://scripts/MainTop.cs" type="Script" id=1]
 [ext_resource path="res://scenes/drawEngine.tscn" type="PackedScene" id=2]
@@ -7,6 +7,10 @@
 [ext_resource path="res://fonts/Godot-Fontpack/fonts/montreal/Montreal-Regular.ttf" type="DynamicFontData" id=5]
 [ext_resource path="res://scenes/visu3D.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scripts/ComPort.cs" type="Script" id=7]
+[ext_resource path="res://addons/dockable_container/layout_panel.gd" type="Script" id=8]
+[ext_resource path="res://addons/dockable_container/layout.gd" type="Script" id=9]
+[ext_resource path="res://addons/dockable_container/dockable_container.gd" type="Script" id=10]
+[ext_resource path="res://addons/dockable_container/layout_split.gd" type="Script" id=11]
 
 [sub_resource type="DynamicFont" id=1]
 size = 12
@@ -16,9 +20,52 @@ font_data = ExtResource( 5 )
 default_font = SubResource( 1 )
 Button/constants/hseparation = 1
 
+[sub_resource type="Resource" id=5]
+resource_name = "Tabs"
+script = ExtResource( 8 )
+names = PoolStringArray( "HBoxTabGroups" )
+current_tab = 0
+
+[sub_resource type="Resource" id=6]
+resource_name = "Tabs"
+script = ExtResource( 8 )
+names = PoolStringArray( "2D Plot" )
+current_tab = 0
+
+[sub_resource type="Resource" id=7]
+resource_name = "Tabs"
+script = ExtResource( 8 )
+names = PoolStringArray( "3D View" )
+current_tab = 0
+
+[sub_resource type="Resource" id=8]
+resource_name = "Split"
+script = ExtResource( 11 )
+direction = 0
+percent = 0.5
+first = SubResource( 6 )
+second = SubResource( 7 )
+
+[sub_resource type="Resource" id=9]
+resource_name = "Split"
+script = ExtResource( 11 )
+direction = 1
+percent = 0.5
+first = SubResource( 5 )
+second = SubResource( 8 )
+
+[sub_resource type="Resource" id=4]
+resource_name = "Layout"
+script = ExtResource( 9 )
+root = SubResource( 9 )
+hidden_tabs = {
+}
+
 [node name="Main" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme = SubResource( 2 )
 script = ExtResource( 1 )
 __meta__ = {
@@ -28,13 +75,15 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_constants/separation = 0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Menu" type="HBoxContainer" parent="VBox"]
-margin_right = 1920.0
+margin_right = 1500.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 script = ExtResource( 3 )
@@ -51,23 +100,17 @@ margin_bottom = 22.0
 disabled = true
 text = "Parameters"
 
-[node name="MenuButton_OpenPort" type="MenuButton" parent="VBox/Menu"]
+[node name="MenuButton_OpenConnection" type="MenuButton" parent="VBox/Menu"]
 margin_left = 121.0
-margin_right = 195.0
+margin_right = 238.0
 margin_bottom = 22.0
 disabled = true
-text = "Open port"
-
-[node name="MarginContainer" type="MarginContainer" parent="VBox"]
-margin_top = 22.0
-margin_right = 1920.0
-margin_bottom = 25.0
-rect_min_size = Vector2( 0, 3 )
+text = "Open connection"
 
 [node name="HBox" type="HBoxContainer" parent="VBox"]
-margin_top = 25.0
-margin_right = 1920.0
-margin_bottom = 1060.0
+margin_top = 22.0
+margin_right = 1500.0
+margin_bottom = 1057.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 0
@@ -79,119 +122,85 @@ rect_min_size = Vector2( 6, 0 )
 
 [node name="VSplitContainer" type="VSplitContainer" parent="VBox/HBox"]
 margin_left = 6.0
-margin_right = 1914.0
+margin_right = 1494.0
 margin_bottom = 1035.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="HBoxTabGroups" type="HBoxContainer" parent="VBox/HBox/VSplitContainer"]
-margin_right = 1908.0
-margin_bottom = 511.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TabContainer" type="TabContainer" parent="VBox/HBox/VSplitContainer/HBoxTabGroups"]
-visible = false
-margin_right = 1908.0
-margin_bottom = 511.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-tab_align = 0
-use_hidden_tabs_for_min_size = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBox/HBox/VSplitContainer/HBoxTabGroups/TabContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 34.0
-margin_right = -4.0
-margin_bottom = -4.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VSplitContainer" type="VSplitContainer" parent="VBox/HBox/VSplitContainer"]
-margin_top = 523.0
-margin_right = 1908.0
+margin_right = 1488.0
 margin_bottom = 1035.0
-rect_min_size = Vector2( 500, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = 500
 
-[node name="HSplitContainer" type="HSplitContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer"]
-margin_right = 1908.0
+[node name="DockableContainer" type="Container" parent="VBox/HBox/VSplitContainer/VSplitContainer"]
+visible = false
+margin_right = 1488.0
 margin_bottom = 404.0
+script = ExtResource( 10 )
+use_hidden_tabs_for_min_size = true
+layout = SubResource( 4 )
+
+[node name="HBoxTabGroups" type="HBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer"]
+visible = false
+margin_left = 4.0
+margin_top = 34.0
+margin_right = 734.0
+margin_bottom = 400.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxPlot" type="VBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/HSplitContainer"]
-visible = false
-margin_right = 867.0
-margin_bottom = 605.0
+[node name="2D Plot" type="VBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer"]
+margin_left = 4.0
+margin_top = 34.0
+margin_right = 734.0
+margin_bottom = 400.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBox/HBox/VSplitContainer/VSplitContainer/HSplitContainer/VBoxPlot"]
-margin_right = 867.0
-margin_bottom = 13.0
-text = "Plot 2D"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="drawEngine" parent="VBox/HBox/VSplitContainer/VSplitContainer/HSplitContainer/VBoxPlot" instance=ExtResource( 2 )]
+[node name="drawEngine" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer/2D Plot" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 17.0
-margin_right = 867.0
-margin_bottom = 605.0
+margin_right = 730.0
+margin_bottom = 366.0
 
-[node name="VBoxVisu3D" type="VBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/HSplitContainer"]
-visible = false
-margin_right = 1746.0
-margin_bottom = 517.0
+[node name="3D View" type="VBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer"]
+margin_left = 754.0
+margin_top = 34.0
+margin_right = 1484.0
+margin_bottom = 400.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBox/HBox/VSplitContainer/VSplitContainer/HSplitContainer/VBoxVisu3D"]
-margin_right = 1746.0
-margin_bottom = 13.0
-text = "Vue 3d"
-
-[node name="VP3DContainer" type="ViewportContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/HSplitContainer/VBoxVisu3D"]
-margin_top = 17.0
-margin_right = 1746.0
-margin_bottom = 517.0
+[node name="VP3DContainer" type="ViewportContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer/3D View"]
+margin_right = 730.0
+margin_bottom = 366.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="Viewport" type="Viewport" parent="VBox/HBox/VSplitContainer/VSplitContainer/HSplitContainer/VBoxVisu3D/VP3DContainer"]
-size = Vector2( 1746, 500 )
+[node name="Viewport" type="Viewport" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer/3D View/VP3DContainer"]
+size = Vector2( 730, 366 )
 size_override_stretch = true
 own_world = true
 handle_input_locally = false
 usage = 3
 render_target_update_mode = 0
 
-[node name="visu3D" parent="VBox/HBox/VSplitContainer/VSplitContainer/HSplitContainer/VBoxVisu3D/VP3DContainer/Viewport" instance=ExtResource( 6 )]
+[node name="visu3D" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer/3D View/VP3DContainer/Viewport" instance=ExtResource( 6 )]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer"]
-margin_top = 416.0
-margin_right = 1908.0
-margin_bottom = 512.0
+margin_right = 1488.0
+margin_bottom = 1035.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/VBoxContainer"]
-margin_right = 1908.0
+margin_right = 1488.0
 margin_bottom = 22.0
 
 [node name="Label" type="Label" parent="VBox/HBox/VSplitContainer/VSplitContainer/VBoxContainer/HBoxContainer"]
@@ -208,8 +217,8 @@ text = "Clear"
 
 [node name="ConsoleOut" type="RichTextLabel" parent="VBox/HBox/VSplitContainer/VSplitContainer/VBoxContainer"]
 margin_top = 26.0
-margin_right = 1908.0
-margin_bottom = 96.0
+margin_right = 1488.0
+margin_bottom = 1035.0
 rect_min_size = Vector2( 0, 70 )
 focus_mode = 2
 size_flags_vertical = 3
@@ -219,14 +228,20 @@ selection_enabled = true
 script = ExtResource( 4 )
 
 [node name="_2" type="MarginContainer" parent="VBox/HBox"]
-margin_left = 1914.0
-margin_right = 1920.0
+margin_left = 1494.0
+margin_right = 1500.0
 margin_bottom = 1035.0
 rect_min_size = Vector2( 6, 0 )
 
+[node name="MarginContainer" type="MarginContainer" parent="VBox"]
+margin_top = 1057.0
+margin_right = 1500.0
+margin_bottom = 1060.0
+rect_min_size = Vector2( 0, 3 )
+
 [node name="Footer" type="HBoxContainer" parent="VBox"]
 margin_top = 1060.0
-margin_right = 1920.0
+margin_right = 1500.0
 margin_bottom = 1080.0
 rect_min_size = Vector2( 0, 20 )
 
