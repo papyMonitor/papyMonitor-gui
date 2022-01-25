@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://scripts/MainTop.cs" type="Script" id=1]
 [ext_resource path="res://scenes/drawEngine.tscn" type="PackedScene" id=2]
@@ -20,12 +20,6 @@ font_data = ExtResource( 5 )
 default_font = SubResource( 1 )
 Button/constants/hseparation = 1
 
-[sub_resource type="Resource" id=5]
-resource_name = "Tabs"
-script = ExtResource( 8 )
-names = PoolStringArray( "HBoxTabGroups" )
-current_tab = 0
-
 [sub_resource type="Resource" id=6]
 resource_name = "Tabs"
 script = ExtResource( 8 )
@@ -46,18 +40,10 @@ percent = 0.5
 first = SubResource( 6 )
 second = SubResource( 7 )
 
-[sub_resource type="Resource" id=9]
-resource_name = "Split"
-script = ExtResource( 11 )
-direction = 1
-percent = 0.5
-first = SubResource( 5 )
-second = SubResource( 8 )
-
 [sub_resource type="Resource" id=4]
 resource_name = "Layout"
 script = ExtResource( 9 )
-root = SubResource( 9 )
+root = SubResource( 8 )
 hidden_tabs = {
 }
 
@@ -127,7 +113,15 @@ margin_bottom = 1035.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="HBoxTabGroups" type="HBoxContainer" parent="VBox/HBox/VSplitContainer"]
+margin_right = 1488.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="VSplitContainer" type="VSplitContainer" parent="VBox/HBox/VSplitContainer"]
+margin_top = 12.0
 margin_right = 1488.0
 margin_bottom = 1035.0
 size_flags_horizontal = 3
@@ -141,18 +135,6 @@ margin_bottom = 404.0
 script = ExtResource( 10 )
 use_hidden_tabs_for_min_size = true
 layout = SubResource( 4 )
-
-[node name="HBoxTabGroups" type="HBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer"]
-visible = false
-margin_left = 4.0
-margin_top = 34.0
-margin_right = 734.0
-margin_bottom = 400.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="2D Plot" type="VBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer/DockableContainer"]
 margin_left = 4.0
@@ -195,7 +177,7 @@ render_target_update_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBox/HBox/VSplitContainer/VSplitContainer"]
 margin_right = 1488.0
-margin_bottom = 1035.0
+margin_bottom = 1023.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -218,7 +200,7 @@ text = "Clear"
 [node name="ConsoleOut" type="RichTextLabel" parent="VBox/HBox/VSplitContainer/VSplitContainer/VBoxContainer"]
 margin_top = 26.0
 margin_right = 1488.0
-margin_bottom = 1035.0
+margin_bottom = 1023.0
 rect_min_size = Vector2( 0, 70 )
 focus_mode = 2
 size_flags_vertical = 3
